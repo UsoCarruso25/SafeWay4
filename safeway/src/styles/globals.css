@@ -8,29 +8,28 @@
 }
 
 :root {
-  /* Tinta (fondos oscuros / mapa nocturno) */
+  /* ====== BASE ====== */
   --ink: #10151C;
   --ink-2: #1B222C;
   --ink-3: #242D39;
 
-  /* Papel (fondos claros / comunidad) */
   --paper: #F7F5F1;
   --paper-2: #FFFFFF;
 
-  /* Acentos de marca */
-  --coral: #FF5D3A;       /* alertas, reportar, acción principal */
+  /* ====== ACENTOS ====== */
+  --coral: #FF5D3A;
   --coral-dark: #C43F22;
   --coral-tint: #FFE3DA;
 
-  --teal: #2BD9A6;        /* verificado, zonas seguras */
+  --teal: #2BD9A6;
   --teal-dark: #0E7D5D;
   --teal-tint: #D8F7EC;
 
-  --amber: #FFC857;       /* interacción, estado activo */
+  --amber: #FFC857;
   --amber-dark: #8A5A0A;
   --amber-tint: #FFF1D6;
 
-  /* Compatibilidad con nombres anteriores */
+  /* ====== ALIAS ====== */
   --primary: var(--ink);
   --primary-dark: #05080C;
   --primary-light: var(--ink-2);
@@ -57,6 +56,7 @@
 
   --radius: 20px;
   --radius-sm: 12px;
+  --radius-lg: 28px;
 
   --font-display: 'Space Grotesk', 'Inter', sans-serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -67,8 +67,10 @@ body {
   background: var(--background);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
+/* ====== SCROLLBAR ====== */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -84,6 +86,7 @@ body {
   background: var(--text-secondary);
 }
 
+/* ====== CARD BASE (estilo referencia) ====== */
 .card {
   background: var(--surface);
   border: 1px solid var(--line-light);
@@ -94,43 +97,51 @@ body {
 }
 .card:hover {
   box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
-/* ===== BOTONES ===== */
+/* ====== BOTONES ====== */
 .btn {
   font-family: var(--font-body);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 20px;
+  padding: 12px 22px;
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: 999px;
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
+  letter-spacing: 0.2px;
 }
+
 .btn-primary {
   background: var(--ink);
   color: var(--text-on-dark);
 }
 .btn-primary:hover {
   background: var(--primary-dark);
+  transform: translateY(-1px);
 }
 .btn-primary:active {
   transform: scale(0.97);
 }
+
 .btn-cta {
   background: var(--coral);
   color: white;
+  box-shadow: 0 6px 18px rgba(255, 93, 58, 0.35);
 }
 .btn-cta:hover {
   background: var(--coral-dark);
+  box-shadow: 0 8px 22px rgba(255, 93, 58, 0.45);
 }
 .btn-cta:active {
   transform: scale(0.97);
 }
+
 .btn-secondary {
   background: var(--surface);
   color: var(--text-primary);
@@ -138,25 +149,27 @@ body {
 }
 .btn-secondary:hover {
   border-color: var(--text-light);
+  background: var(--paper);
 }
+
 .btn-danger {
   background: var(--coral);
   color: white;
 }
 
-/* ===== CHIPS / ETIQUETAS ===== */
+/* ====== CHIPS ====== */
 .chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 12px;
+  padding: 6px 14px;
   border-radius: 999px;
   font-size: 11px;
   font-weight: 700;
-  text-transform: none;
+  letter-spacing: 0.2px;
 }
 .chip-coral { background: var(--coral-tint); color: var(--coral-dark); }
-.chip-teal { background: var(--teal-tint); color: var(--teal-dark); }
+.chip-teal  { background: var(--teal-tint);  color: var(--teal-dark); }
 .chip-amber { background: var(--amber-tint); color: var(--amber-dark); }
 .chip-outline {
   background: var(--surface);
@@ -169,19 +182,19 @@ body {
   border-color: var(--ink);
 }
 
-/* Compatibilidad con .badge usado en versiones anteriores */
+/* ====== BADGES ====== */
 .badge {
   display: inline-block;
   padding: 4px 12px;
-  border-radius: 20px;
+  border-radius: 999px;
   font-size: 12px;
   font-weight: 700;
 }
 .badge-success { background: var(--teal-tint); color: var(--teal-dark); }
 .badge-warning { background: var(--amber-tint); color: var(--amber-dark); }
-.badge-danger { background: var(--coral-tint); color: var(--coral-dark); }
+.badge-danger  { background: var(--coral-tint); color: var(--coral-dark); }
 
-/* ===== PÍLDORA DE VOTOS / REACCIONES ===== */
+/* ====== VOTE PILL ====== */
 .vote-pill {
   display: inline-flex;
   align-items: center;
@@ -204,7 +217,7 @@ body {
   color: var(--text-secondary);
   transition: all 0.15s ease;
 }
-.vote-pill button.up.active { background: var(--teal-tint); color: var(--teal-dark); }
+.vote-pill button.up.active   { background: var(--teal-tint);  color: var(--teal-dark); }
 .vote-pill button.down.active { background: var(--coral-tint); color: var(--coral-dark); }
 .vote-divider {
   width: 1px;
@@ -216,7 +229,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 12px;
+  padding: 8px 14px;
   border-radius: 999px;
   font-size: 12.5px;
   font-weight: 600;
@@ -231,7 +244,7 @@ body {
   background: var(--coral-tint);
 }
 
-/* ===== BOTÓN FLOTANTE (FAB) ===== */
+/* ====== FAB ====== */
 .fab {
   width: 56px;
   height: 56px;
@@ -244,12 +257,13 @@ body {
   box-shadow: 0 10px 24px rgba(255, 93, 58, 0.4);
   cursor: pointer;
   transition: transform 0.15s ease;
+  color: white;
 }
 .fab:active {
   transform: scale(0.94);
 }
 
-/* ===== DOCK INFERIOR (compartido por todas las páginas) ===== */
+/* ====== BOTTOM DOCK (estilo referencia) ====== */
 .bottom-dock {
   position: fixed;
   bottom: 16px;
@@ -257,16 +271,17 @@ body {
   right: 16px;
   z-index: 1000;
   display: flex;
-  justify-content: center;
-  gap: 8px;
-  background: rgba(27, 34, 44, 0.9);
+  justify-content: space-around;
+  align-items: center;
+  gap: 4px;
+  background: rgba(27, 34, 44, 0.92);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
-  padding: 8px;
+  padding: 8px 10px;
   border-radius: 100px;
   border: 1px solid var(--line-dark);
   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
-  max-width: 340px;
+  max-width: 380px;
   margin: 0 auto;
 }
 
@@ -300,10 +315,16 @@ body {
   color: var(--amber);
 }
 
+/* ====== ANIMACIONES ====== */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 .fade-in {
   animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1);   box-shadow: 0 0 20px rgba(255, 93, 58, 0.4); }
+  50%      { transform: scale(1.2); box-shadow: 0 0 40px rgba(255, 93, 58, 0.8); }
 }

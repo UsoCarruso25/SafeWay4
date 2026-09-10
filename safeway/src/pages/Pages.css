@@ -6,36 +6,35 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  background: #f5f7fa;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #F7F5F1;
   overflow-x: hidden;
 }
 
 .page-container {
   min-height: 100vh;
-  background: #f0f2f5;
-  padding-bottom: 70px;
+  background: #F7F5F1;
+  padding-bottom: 90px;
 }
 
 /* ============================================
    HOME - VERSIÓN MÓVIL
    ============================================ */
 .home-content {
-  padding: 12px 16px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   max-width: 480px;
   margin: 0 auto;
 }
 
-/* Ocultar paneles laterales en móvil */
 .home-left,
 .home-right {
   width: 100% !important;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .home-center {
@@ -44,24 +43,23 @@ body {
 }
 
 /* ============================================
-   MAPA - VERSIÓN MÓVIL
+   MAPA
    ============================================ */
 .map-wrapper {
   position: relative;
   width: 100%;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
   background: #e8ecf1;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(16, 21, 28, 0.1);
 }
 
 .map-container {
   width: 100%;
-  height: 320px;
+  height: 340px;
   min-height: 280px;
 }
 
-/* Overlay del mapa */
 .map-overlay-top {
   position: absolute;
   top: 12px;
@@ -72,39 +70,39 @@ body {
   max-width: 400px;
 }
 
-/* Modos de visualización - MÓVIL */
+/* Modos de visualización */
 .view-modes {
   position: absolute;
-  bottom: 12px;
+  bottom: 14px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   gap: 4px;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 4px;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.96);
+  padding: 5px;
+  border-radius: 100px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   z-index: 10;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
 }
 
 .view-btn {
-  padding: 5px 12px;
+  padding: 7px 16px;
   border: none;
-  border-radius: 8px;
+  border-radius: 100px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
   background: transparent;
-  color: #666;
+  color: #6B6459;
   font-family: inherit;
 }
 
 .view-btn.active {
-  background: #4A6CF7;
+  background: #FF5D3A;
   color: white;
-  box-shadow: 0 2px 8px rgba(74, 108, 247, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 93, 58, 0.35);
 }
 
 .view-btn:hover:not(.active) {
@@ -125,89 +123,108 @@ body {
 }
 
 .reports-overlay .card {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(10px);
-  padding: 10px 12px;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  padding: 12px 14px;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 1px solid #EAE6DC;
 }
 
 /* ============================================
-   CARDS Y SECCIONES - MÓVIL
+   CARDS
    ============================================ */
 .card {
-  background: white;
-  border-radius: 14px;
-  padding: 14px 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 12px rgba(16, 21, 28, 0.08);
+  border: 1px solid #EAE6DC;
+  transition: all 0.25s ease;
 }
 
-/* Quick Actions - Móvil */
+.card:hover {
+  box-shadow: 0 6px 24px rgba(16, 21, 28, 0.12);
+  transform: translateY(-2px);
+}
+
+/* Quick Actions */
 .quick-actions {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
+  gap: 10px;
 }
 
 .quick-btn {
-  padding: 10px 8px;
+  padding: 14px 8px;
   border: none;
-  border-radius: 12px;
+  border-radius: 16px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   font-family: inherit;
 }
 
 .quick-btn span {
-  font-size: 20px;
+  font-size: 22px;
 }
 
 .quick-btn.report {
-  background: #FFE5E5;
-  color: #D32F2F;
+  background: #FFE3DA;
+  color: #C43F22;
+}
+.quick-btn.report:hover {
+  background: #FFD0C0;
 }
 
 .quick-btn.community {
   background: #E3F2FD;
   color: #1976D2;
 }
+.quick-btn.community:hover {
+  background: #D0E8FB;
+}
 
 .quick-btn.settings {
   background: #F3E5F5;
   color: #7B1FA2;
+}
+.quick-btn.settings:hover {
+  background: #EBD5F0;
 }
 
 .quick-btn:active {
   transform: scale(0.95);
 }
 
-/* Lugares cercanos - Móvil */
+/* Lugares cercanos */
 .nearby-places {
-  background: white;
-  border-radius: 14px;
-  padding: 14px 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 12px rgba(16, 21, 28, 0.08);
+  border: 1px solid #EAE6DC;
 }
 
 .nearby-places h4 {
-  margin: 0 0 10px 0;
-  font-size: 14px;
-  color: #333;
+  margin: 0 0 12px 0;
+  font-size: 15px;
+  color: #20241F;
+  font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif;
 }
 
 .place-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px solid #f5f5f5;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #F0EDE6;
 }
 
 .place-item:last-child {
@@ -215,131 +232,172 @@ body {
 }
 
 .place-icon {
-  font-size: 18px;
-  width: 32px;
+  font-size: 20px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F7F5F1;
+  border-radius: 12px;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .place-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: #333;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #20241F;
 }
 
 .place-distance {
-  font-size: 11px;
-  color: #999;
+  font-size: 11.5px;
+  color: #9A9284;
 }
 
 /* ============================================
-   COMUNIDAD - MÓVIL
+   COMUNIDAD
    ============================================ */
 .community-preview {
-  background: white;
-  border-radius: 14px;
-  padding: 14px 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  max-height: 300px;
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 12px rgba(16, 21, 28, 0.08);
+  border: 1px solid #EAE6DC;
+  max-height: 320px;
   overflow-y: auto;
 }
 
 /* ============================================
-   BOTONES - MÓVIL
+   BOTONES
    ============================================ */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 18px;
+  padding: 12px 20px;
   border: none;
-  border-radius: 10px;
-  font-weight: 600;
+  border-radius: 100px;
+  font-weight: 700;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
   width: 100%;
+  letter-spacing: 0.2px;
 }
 
 .btn-primary {
-  background: #4A6CF7;
-  color: white;
+  background: #10151C;
+  color: #F5F3EE;
 }
-
+.btn-primary:hover {
+  background: #05080C;
+}
 .btn-primary:active {
   transform: scale(0.97);
 }
 
+.btn-cta {
+  background: #FF5D3A;
+  color: white;
+  box-shadow: 0 6px 18px rgba(255, 93, 58, 0.35);
+}
+.btn-cta:hover {
+  background: #C43F22;
+}
+
 .btn-secondary {
-  background: #f5f5f5;
-  color: #333;
-  border: 1px solid #e8e8e8;
+  background: #FFFFFF;
+  color: #20241F;
+  border: 1.5px solid #EAE6DC;
+}
+.btn-secondary:hover {
+  border-color: #9A9284;
 }
 
 .btn-danger {
-  background: #F44336;
+  background: #FF5D3A;
   color: white;
 }
 
 /* ============================================
-   BADGES - MÓVIL
+   BADGES
    ============================================ */
 .badge {
   display: inline-block;
-  padding: 3px 10px;
-  border-radius: 20px;
+  padding: 4px 12px;
+  border-radius: 999px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .badge-success {
-  background: #E8F5E9;
-  color: #4CAF50;
+  background: #D8F7EC;
+  color: #0E7D5D;
 }
 
 .badge-warning {
-  background: #FFF3E0;
-  color: #FF9800;
+  background: #FFF1D6;
+  color: #8A5A0A;
 }
 
 .badge-danger {
-  background: #FFEBEE;
-  color: #F44336;
+  background: #FFE3DA;
+  color: #C43F22;
 }
 
 /* ============================================
-   WELCOME CARD - MÓVIL
+   WELCOME CARD
    ============================================ */
 .welcome-card {
-  background: linear-gradient(135deg, #4A6CF7, #6B8AFF);
+  background: linear-gradient(135deg, #FF5D3A, #FF8A6B);
   color: white;
-  padding: 24px 20px;
-  border-radius: 14px;
+  padding: 28px 22px;
+  border-radius: 20px;
   text-align: center;
-  box-shadow: 0 4px 20px rgba(74, 108, 247, 0.3);
+  box-shadow: 0 8px 28px rgba(255, 93, 58, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -30%;
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
 }
 
 .welcome-card h1 {
-  font-size: 22px;
-  margin: 0 0 4px 0;
+  font-size: 24px;
+  margin: 0 0 6px 0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  position: relative;
 }
 
 .welcome-card p {
   font-size: 14px;
-  opacity: 0.9;
+  opacity: 0.92;
   margin: 0;
+  position: relative;
 }
 
 /* ============================================
-   RESPONSIVE - SOLO MÓVIL
+   RESPONSIVE
    ============================================ */
 @media (min-width: 769px) {
   .home-content {
     max-width: 480px;
-    padding: 12px 16px;
+    padding: 16px;
   }
-  
+
   .home-left,
   .home-right,
   .home-center {
@@ -349,32 +407,36 @@ body {
 
 @media (max-width: 480px) {
   .map-container {
-    height: 250px;
-    min-height: 200px;
+    height: 260px;
+    min-height: 220px;
   }
-  
+
   .view-btn {
-    padding: 4px 10px;
-    font-size: 10px;
+    padding: 6px 12px;
+    font-size: 10.5px;
   }
-  
+
   .home-content {
-    padding: 8px 12px;
-    gap: 10px;
+    padding: 12px;
+    gap: 12px;
   }
-  
+
   .quick-btn {
     font-size: 11px;
-    padding: 8px 4px;
+    padding: 12px 6px;
   }
-  
+
   .quick-btn span {
-    font-size: 18px;
+    font-size: 20px;
   }
-  
+
   .reports-overlay {
     width: 160px;
     right: 8px;
     top: 60px;
+  }
+
+  .welcome-card h1 {
+    font-size: 20px;
   }
 }
