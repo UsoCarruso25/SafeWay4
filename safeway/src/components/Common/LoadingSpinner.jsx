@@ -1,7 +1,7 @@
 // src/components/Common/LoadingSpinner.jsx
 import React from 'react';
 
-const LoadingSpinner = ({ size = 40, color = '#4A6CF7' }) => {
+const LoadingSpinner = ({ size = 40, color = '#FF5D3A' }) => {
   return (
     <div style={{
       display: 'flex',

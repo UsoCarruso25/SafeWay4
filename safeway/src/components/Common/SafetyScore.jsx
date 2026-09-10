@@ -3,7 +3,7 @@ import React from 'react';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
 const SafetyScore = ({ score = 78, trend = 'up' }) => {
-  const getColor = (s) => s >= 70 ? '#34C759' : s >= 40 ? '#FFCC00' : '#FF3B30';
+  const getColor = (s) => s >= 70 ? '#2BD9A6' : s >= 40 ? '#FFC857' : '#FF5D3A';
   const getStatus = (s) => s >= 70 ? 'Condiciones favorables' : s >= 40 ? 'Precaución' : 'Zona de riesgo';
   const circumference = 2 * Math.PI * 22;
 
@@ -56,8 +56,8 @@ const SafetyScore = ({ score = 78, trend = 'up' }) => {
           fontWeight: '500', 
           padding: '1px 10px', 
           borderRadius: '100px',
-          background: trend === 'up' ? 'rgba(52, 199, 89, 0.15)' : 'rgba(255, 59, 48, 0.15)',
-          color: trend === 'up' ? '#34C759' : '#FF3B30',
+          background: trend === 'up' ? 'rgba(43, 217, 166, 0.15)' : 'rgba(255, 93, 58, 0.15)',
+          color: trend === 'up' ? '#2BD9A6' : '#FF5D3A',
           marginTop: '2px',
           letterSpacing: '0.3px'
         }}>

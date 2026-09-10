@@ -7,7 +7,7 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #000;
+  background: #10151C;
   overflow: hidden;
 }
 
@@ -16,7 +16,7 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: #000;
+  background: #10151C;
 }
 
 /* ===== MAPA FULLSCREEN ===== */
@@ -30,7 +30,7 @@ body {
   height: 100%;
 }
 
-/* ===== TOPBAR ESTILO APPLE ===== */
+/* ===== TOPBAR ===== */
 .topbar-apple {
   position: absolute;
   top: 16px;
@@ -40,94 +40,115 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 18px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  padding: 8px 10px 8px 16px;
+  background: rgba(27, 34, 44, 0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-radius: 100px;
-  border: 0.5px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
 }
 
 .topbar-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
 }
 
-.app-icon {
-  font-size: 18px;
+.app-icon-mark {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: #FF5D3A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.app-icon-mark svg {
+  width: 13px;
+  height: 13px;
+  stroke: white;
 }
 
 .app-title {
-  font-size: 17px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
   font-weight: 700;
-  color: white;
-  letter-spacing: -0.3px;
+  color: #F5F3EE;
+  letter-spacing: -0.2px;
 }
 
 .app-title span {
-  color: #4A6CF7;
+  color: #FFC857;
 }
 
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 100px;
+  padding: 4px;
 }
 
 .icon-btn-glass {
   position: relative;
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   border: none;
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: transparent;
   cursor: pointer;
-  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
 }
 
+.icon-btn-glass svg {
+  width: 17px;
+  height: 17px;
+  stroke: #F5F3EE;
+}
+
 .icon-btn-glass:active {
   transform: scale(0.92);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .badge-glass {
   position: absolute;
-  top: -2px;
-  right: -2px;
-  background: #FF3B30;
+  top: 2px;
+  right: 2px;
+  background: #FF5D3A;
   color: white;
   font-size: 9px;
   font-weight: 700;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1.5px solid rgba(0, 0, 0, 0.3);
+  border: 1.5px solid #1B222C;
 }
 
 .avatar-glass {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   border: none;
-  background: linear-gradient(135deg, #4A6CF7, #6B8AFF);
-  color: white;
-  font-size: 14px;
-  font-weight: 600;
+  background: #10151C;
+  color: #FFC857;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(74, 108, 247, 0.3);
   transition: all 0.2s ease;
 }
 
@@ -135,95 +156,104 @@ body {
   transform: scale(0.92);
 }
 
-/* ===== SEARCH BAR - ESTILO APPLE ===== */
+/* ===== SEARCH BAR ===== */
 .search-apple {
   position: absolute;
-  top: 80px;
+  top: 76px;
   left: 16px;
   right: 16px;
   z-index: 15;
 }
 
 .search-apple form {
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border-radius: 100px !important;
-  padding: 4px 18px !important;
-  border: 0.5px solid rgba(255, 255, 255, 0.15) !important;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15) !important;
+  background: rgba(27, 34, 44, 0.72) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 16px !important;
+  padding: 4px 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2) !important;
 }
 
 .search-apple input {
   font-family: 'Inter', sans-serif !important;
   font-size: 14px !important;
-  color: white !important;
+  color: #F5F3EE !important;
 }
 
 .search-apple input::placeholder {
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: #9AA6B4 !important;
 }
 
 .search-apple .search-icon {
-  color: rgba(255, 255, 255, 0.4) !important;
+  color: #9AA6B4 !important;
 }
 
 /* ===== SAFETY CAPSULE ===== */
 .safety-capsule {
   position: absolute;
-  bottom: 180px;
+  bottom: 178px;
   left: 16px;
   z-index: 15;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(27, 34, 44, 0.78);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-radius: 100px;
+  border-radius: 18px;
   padding: 10px 16px 10px 12px;
-  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
-  max-width: 200px;
+  max-width: 210px;
 }
 
-/* ===== CONTROLES DEL MAPA - CÁPSULAS ===== */
+/* ===== CONTROLES DEL MAPA - SEGMENTADO ===== */
 .controls-capsule {
   position: absolute;
-  bottom: 120px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 118px;
+  left: 16px;
+  right: 16px;
   z-index: 15;
   display: flex;
-  gap: 6px;
-  padding: 6px 10px;
-  background: rgba(0, 0, 0, 0.5);
+  justify-content: space-between;
+  gap: 4px;
+  padding: 5px;
+  background: rgba(27, 34, 44, 0.72);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-radius: 100px;
-  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
 }
 
 .capsule-btn {
-  padding: 6px 16px;
+  flex: 1;
+  padding: 8px 10px;
   border: none;
   border-radius: 100px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all 0.2s ease;
   font-family: 'Inter', sans-serif;
   background: transparent;
-  color: rgba(255, 255, 255, 0.5);
-  letter-spacing: 0.2px;
+  color: #9AA6B4;
+  letter-spacing: 0.1px;
 }
 
 .capsule-btn.active {
-  background: #4A6CF7;
-  color: white;
-  box-shadow: 0 4px 16px rgba(74, 108, 247, 0.4);
+  background: #FFC857;
+  color: #2B1D00;
 }
 
 .capsule-btn:active {
-  transform: scale(0.92);
+  transform: scale(0.95);
+}
+
+/* ===== FAB DE REPORTAR ===== */
+.home-fab {
+  position: absolute;
+  bottom: 96px;
+  right: 16px;
+  z-index: 16;
 }
 
 /* ===== RESPONSIVE ===== */
@@ -232,92 +262,102 @@ body {
     top: 12px;
     left: 12px;
     right: 12px;
-    padding: 8px 14px;
   }
-  
+
   .app-title {
     font-size: 15px;
   }
-  
+
   .search-apple {
-    top: 72px;
+    top: 70px;
     left: 12px;
     right: 12px;
   }
-  
+
   .safety-capsule {
-    bottom: 170px;
+    bottom: 168px;
     left: 12px;
     padding: 8px 12px 8px 10px;
-    max-width: 160px;
+    max-width: 170px;
   }
-  
+
   .controls-capsule {
-    bottom: 110px;
-    padding: 4px 8px;
-    gap: 4px;
+    bottom: 108px;
+    left: 12px;
+    right: 12px;
   }
-  
+
   .capsule-btn {
-    padding: 4px 12px;
+    padding: 7px 6px;
     font-size: 10px;
+  }
+
+  .home-fab {
+    bottom: 92px;
+    right: 12px;
   }
 }
 
 /* ===== MAPLIBRE OVERRIDES ===== */
 .maplibregl-ctrl-group {
-  background: rgba(0, 0, 0, 0.4) !important;
+  background: rgba(27, 34, 44, 0.72) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border-radius: 100px !important;
-  border: 0.5px solid rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
   overflow: hidden !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
 }
 
 .maplibregl-ctrl-group button {
   background: transparent !important;
-  color: white !important;
+  color: #F5F3EE !important;
   border: none !important;
   width: 36px !important;
   height: 36px !important;
 }
 
 .maplibregl-ctrl-group button:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
 }
 
 .maplibregl-ctrl-group button span {
-  color: white !important;
+  color: #F5F3EE !important;
 }
 
 .maplibregl-ctrl-attrib {
-  background: rgba(0, 0, 0, 0.3) !important;
+  background: rgba(27, 34, 44, 0.6) !important;
   backdrop-filter: blur(8px) !important;
   -webkit-backdrop-filter: blur(8px) !important;
   border-radius: 100px !important;
   padding: 2px 12px !important;
   font-size: 8px !important;
-  color: rgba(255, 255, 255, 0.3) !important;
-  border: 0.5px solid rgba(255, 255, 255, 0.05) !important;
+  color: rgba(245, 243, 238, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
 
 .maplibregl-ctrl-attrib a {
-  color: rgba(255, 255, 255, 0.3) !important;
+  color: rgba(245, 243, 238, 0.4) !important;
 }
 
-/* ===== POPUP ESTILO APPLE ===== */
+/* ===== POPUP ===== */
 .maplibregl-popup-content {
-  background: rgba(255, 255, 255, 0.9) !important;
+  background: rgba(27, 34, 44, 0.92) !important;
   backdrop-filter: blur(20px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
   border-radius: 16px !important;
-  border: 0.5px solid rgba(255, 255, 255, 0.2) !important;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3) !important;
   padding: 12px 16px !important;
   font-family: 'Inter', sans-serif !important;
+  color: #F5F3EE !important;
 }
 
 .maplibregl-popup-tip {
-  border-top-color: rgba(255, 255, 255, 0.9) !important;
+  border-top-color: rgba(27, 34, 44, 0.92) !important;
+}
+
+@keyframes pulse-location {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 93, 58, 0.4); }
+  50% { transform: scale(1.2); box-shadow: 0 0 40px rgba(255, 93, 58, 0.8); }
 }

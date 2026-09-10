@@ -38,26 +38,27 @@ const Settings = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#f0f2f5',
+      background: 'var(--background)',
       display: 'flex',
       flexDirection: 'column'
     }}>
       <TopBar />
-      
+
       <div style={{
         flex: 1,
-        padding: '20px 16px 100px 16px',
+        padding: '20px 16px 110px 16px',
         overflowY: 'auto'
       }}>
-        <h2 style={{ 
-          fontSize: '20px', 
+        <h2 style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: '20px',
           fontWeight: '700',
           marginBottom: '20px',
-          color: '#1a1a2e'
+          color: 'var(--text-primary)'
         }}>
-          ⚙️ Ajustes
+          Ajustes
         </h2>
-        
+
         {settingsSections.map((section, index) => (
           <div key={index} style={{ marginBottom: '20px' }}>
             <div style={{
@@ -66,23 +67,18 @@ const Settings = () => {
               gap: '8px',
               marginBottom: '8px'
             }}>
-              <section.icon size={18} color="#4A6CF7" />
-              <h3 style={{ 
-                margin: 0, 
+              <section.icon size={18} color="var(--coral)" />
+              <h3 style={{
+                margin: 0,
                 fontSize: '14px',
-                fontWeight: '600',
-                color: '#333'
+                fontWeight: '700',
+                color: 'var(--text-primary)'
               }}>
                 {section.title}
               </h3>
             </div>
-            
-            <div style={{
-              background: 'white',
-              borderRadius: '12px',
-              overflow: 'hidden',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-            }}>
+
+            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
               {section.items.map((item, itemIndex) => (
                 <div
                   key={itemIndex}
@@ -91,61 +87,43 @@ const Settings = () => {
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     padding: '14px 16px',
-                    borderBottom: itemIndex < section.items.length - 1 ? '1px solid #f5f5f5' : 'none',
+                    borderBottom: itemIndex < section.items.length - 1 ? '1px solid var(--line-light)' : 'none',
                     cursor: 'pointer',
-                    transition: 'background 0.2s'
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = '#f8f9fa'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
                 >
                   <div>
-                    <div style={{ 
-                      fontSize: '14px', 
-                      fontWeight: '500',
-                      color: '#333'
+                    <div style={{
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: 'var(--text-primary)'
                     }}>
                       {item.label}
                     </div>
-                    <div style={{ 
-                      fontSize: '12px', 
-                      color: '#999',
+                    <div style={{
+                      fontSize: '12px',
+                      color: 'var(--text-secondary)',
                       marginTop: '2px'
                     }}>
                       {item.description}
                     </div>
                   </div>
-                  <ChevronRight size={18} color="#ccc" />
+                  <ChevronRight size={18} color="var(--text-light)" />
                 </div>
               ))}
             </div>
           </div>
         ))}
-        
+
         <button
           onClick={signOut}
-          style={{
-            width: '100%',
-            padding: '14px',
-            background: '#F44336',
-            color: 'white',
-            border: 'none',
-            borderRadius: '12px',
-            fontSize: '16px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            marginTop: '8px',
-            transition: 'opacity 0.2s'
-          }}
+          className="btn btn-cta"
+          style={{ width: '100%', padding: '14px', fontSize: '15px', marginTop: '8px' }}
         >
-          <LogOut size={20} />
-          Cerrar Sesión
+          <LogOut size={19} />
+          Cerrar sesión
         </button>
       </div>
-      
+
       <BottomNav />
     </div>
   );

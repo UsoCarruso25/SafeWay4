@@ -1,88 +1,89 @@
+
 // src/pages/Community.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Plus } from 'lucide-react';
 import CommunityFeed from '../components/Community/CommunityFeed';
 import TopBar from '../components/Layout/TopBar';
 import BottomNav from '../components/Layout/BottomNav';
 import { useAuth } from '../context/AuthContext';
 
+// TODO: reemplazar por los grupos reales del usuario (uno por localidad/barrio)
+const GROUPS = ['Patio Bonito', 'Corabastos', 'Timiza'];
+
 const Community = () => {
   const { user } = useAuth();
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  // Simular carga de posts (conecta con tu API después)
-  useEffect(() => {
-    setTimeout(() => {
-      setPosts([]);
-      setLoading(false);
-    }, 1000);
-  }, []);
+  const [activeGroup, setActiveGroup] = useState(GROUPS[0]);
 
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#f0f2f5',
+      background: 'var(--background)',
       display: 'flex',
       flexDirection: 'column'
     }}>
       <TopBar />
-      
-      {/* Encabezado fijo */}
+
+      {/* Encabezado de la página + grupos por barrio */}
       <div style={{
         position: 'sticky',
         top: 0,
         zIndex: 10,
-        background: 'white',
-        padding: '16px 16px 12px 16px',
-        borderBottom: '1px solid #f0f0f0',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+        background: 'var(--background)',
+        padding: '18px 16px 10px 16px',
       }}>
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          marginBottom: '12px'
         }}>
           <div>
             <h2 style={{
-              fontSize: '20px',
+              fontFamily: 'var(--font-display)',
+              fontSize: '19px',
               fontWeight: '700',
               margin: 0,
-              color: '#1a1a2e'
+              color: 'var(--text-primary)'
             }}>
-              💬 Comunidad
+              Comunidad
             </h2>
             <p style={{
-              fontSize: '13px',
-              color: '#999',
-              margin: '4px 0 0 0'
+              fontSize: '12px',
+              color: 'var(--text-secondary)',
+              margin: '2px 0 0 0'
             }}>
               {user?.email || 'Usuario'}
             </p>
           </div>
-          <button style={{
-            padding: '8px 16px',
-            background: '#4A6CF7',
-            color: 'white',
-            border: 'none',
-            borderRadius: '10px',
-            fontSize: '13px',
-            fontWeight: '600',
-            cursor: 'pointer'
-          }}>
-            + Nuevo
+          <button className="btn btn-cta" style={{ padding: '9px 16px', fontSize: 12 }}>
+            <Plus size={14} strokeWidth={2.6} />
+            Publicar
           </button>
         </div>
+
+        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: 2 }}>
+          {GROUPS.map((group) => (
+            <button
+              key={group}
+              onClick={() => setActiveGroup(group)}
+              className={`chip chip-outline${group === activeGroup ? ' active' : ''}`}
+              style={{ flexShrink: 0, border: 'none', cursor: 'pointer' }}
+            >
+              {group}
+            </button>
+          ))}
+        </div>
       </div>
-      
+
       {/* Contenido scrolleable */}
       <div style={{
         flex: 1,
-        padding: '16px 16px 100px 16px',
+        padding: '4px 16px 110px 16px',
         overflowY: 'auto'
       }}>
         <CommunityFeed />
       </div>
-      
+
       <BottomNav />
     </div>
   );

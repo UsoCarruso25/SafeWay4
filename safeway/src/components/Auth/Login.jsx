@@ -61,41 +61,53 @@ const Login = () => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      background: '#10151C',
       padding: '20px'
     }}>
       <div style={{
-        background: 'white',
+        background: '#F7F5F1',
         borderRadius: '24px',
         padding: '48px 40px',
         width: '100%',
         maxWidth: '440px',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.35)',
         animation: 'slideUp 0.5s ease'
       }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#4A6CF7', margin: '0 0 8px 0' }}>
-            SafaWay
+          <div style={{
+            width: 44,
+            height: 44,
+            borderRadius: 14,
+            background: '#FF5D3A',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 14px'
+          }}>
+            <Lock size={20} color="white" />
+          </div>
+          <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '26px', fontWeight: '700', color: '#20241F', margin: '0 0 8px 0' }}>
+            Safa<span style={{ color: '#C43F22' }}>Way</span>
           </h1>
-          <h2 style={{ fontSize: '24px', color: '#333', margin: '0 0 8px 0' }}>
-            {isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}
+          <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#20241F', margin: '0 0 6px 0' }}>
+            {isLogin ? 'Iniciar sesión' : 'Crear cuenta'}
           </h2>
-          <p style={{ color: '#666', fontSize: '14px', margin: 0 }}>
-            {isLogin ? 'Bienvenido de vuelta' : 'Únete a la comunidad'}
+          <p style={{ color: '#6B6459', fontSize: '14px', margin: 0 }}>
+            {isLogin ? 'Bienvenido de vuelta a tu barrio' : 'Únete a la comunidad de Patio Bonito'}
           </p>
         </div>
 
         {error && (
           <div style={{
-            background: '#ffebee',
-            color: '#c62828',
+            background: '#FFE3DA',
+            color: '#C43F22',
             padding: '12px 16px',
-            borderRadius: '8px',
+            borderRadius: '10px',
             fontSize: '14px',
             marginBottom: '20px',
-            border: '1px solid #ffcdd2'
+            fontWeight: 600
           }}>
-            ❌ {error}
+            {error}
           </div>
         )}
 

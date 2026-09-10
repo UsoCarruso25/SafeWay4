@@ -26,9 +26,9 @@ const CreatePost = ({ onSubmit, onCancel }) => {
   };
 
   return (
-    <div className="card" style={{ padding: '16px', marginBottom: '16px', background: '#f8f9fa' }}>
+    <div className="card" style={{ padding: '16px', marginBottom: '16px', background: 'var(--paper)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-        <h4 style={{ margin: 0 }}>Nueva publicación</h4>
+        <h4 style={{ margin: 0, fontFamily: 'var(--font-display)' }}>Nueva publicación</h4>
         <button onClick={onCancel} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
           <X size={20} />
         </button>
@@ -42,11 +42,11 @@ const CreatePost = ({ onSubmit, onCancel }) => {
           placeholder="Título de la publicación"
           style={{
             padding: '10px 14px',
-            border: '1px solid #e8e8e8',
-            borderRadius: '8px',
+            border: '1px solid var(--line-light)',
+            borderRadius: 'var(--radius-sm)',
             fontSize: '14px',
             outline: 'none',
-            background: 'white'
+            background: 'var(--paper-2)'
           }}
           required
         />
@@ -58,13 +58,13 @@ const CreatePost = ({ onSubmit, onCancel }) => {
           rows="3"
           style={{
             padding: '10px 14px',
-            border: '1px solid #e8e8e8',
-            borderRadius: '8px',
+            border: '1px solid var(--line-light)',
+            borderRadius: 'var(--radius-sm)',
             fontSize: '14px',
             outline: 'none',
             fontFamily: 'inherit',
             resize: 'vertical',
-            background: 'white'
+            background: 'var(--paper-2)'
           }}
           required
         />
@@ -75,11 +75,11 @@ const CreatePost = ({ onSubmit, onCancel }) => {
             onChange={(e) => setCategory(e.target.value)}
             style={{
               padding: '8px 12px',
-              border: '1px solid #e8e8e8',
-              borderRadius: '8px',
+              border: '1px solid var(--line-light)',
+              borderRadius: 'var(--radius-sm)',
               fontSize: '13px',
               outline: 'none',
-              background: 'white',
+              background: 'var(--paper-2)',
               flex: 1
             }}
           >
@@ -90,8 +90,8 @@ const CreatePost = ({ onSubmit, onCancel }) => {
             <option value="discussion">Discusión</option>
           </select>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 2, background: 'white', padding: '4px 12px', borderRadius: '8px', border: '1px solid #e8e8e8' }}>
-            <MapPin size={16} color="#999" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 2, background: 'var(--paper-2)', padding: '4px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--line-light)' }}>
+            <MapPin size={16} color="var(--text-light)" />
             <input
               type="text"
               value={location}
@@ -120,7 +120,7 @@ const CreatePost = ({ onSubmit, onCancel }) => {
           </button>
           <button
             type="submit"
-            className="btn btn-primary"
+            className="btn btn-cta"
             style={{ padding: '8px 20px', fontSize: '13px' }}
           >
             Publicar

@@ -62,9 +62,9 @@ const NearbyReports = ({ lat = PATIO_BONITO.lat, lng = PATIO_BONITO.lng }) => {
   };
 
   const getSeverityColor = (severity) => {
-    if (severity >= 4) return '#F44336';
-    if (severity >= 3) return '#FFC107';
-    return '#4CAF50';
+    if (severity >= 4) return '#FF5D3A';
+    if (severity >= 3) return '#FFC857';
+    return '#2BD9A6';
   };
 
   if (loading) return <LoadingSpinner size={24} />;

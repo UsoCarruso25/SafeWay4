@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import TopBar from '../components/Layout/TopBar';
+import { Bell, Search as SearchIcon, ShieldCheck, Plus } from 'lucide-react';
 import BottomNav from '../components/Layout/BottomNav';
 import SafetyScore from '../components/Common/SafetyScore';
 import SearchBar from '../components/Common/SearchBar';
@@ -21,6 +21,18 @@ const PATIO_BONITO_BOUNDS = {
   south: 4.6200,  // Ampliado hacia el sur
   east: -74.1350, // Ampliado hacia el este
   west: -74.1600  // Ampliado hacia el oeste
+};
+
+// 🎨 Paleta de marcadores (misma que el resto de la app)
+const MARKER_COLORS = {
+  you: '#4C8CFF',
+  home: '#FF5D3A',
+  health: '#2BD9A6',
+  school: '#FFC857',
+  park: '#2BD9A6',
+  market: '#FFC857',
+  works: '#FF5D3A',
+  transit: '#4C8CFF',
 };
 
 const Home = () => {
@@ -62,7 +74,7 @@ const Home = () => {
 
       map.current = new maplibregl.Map({
         container: mapContainer.current,
-        style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
+        style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
         center: [PATIO_BONITO.lng, PATIO_BONITO.lat],
         zoom: PATIO_BONITO.zoom,
         attributionControl: false,
@@ -76,7 +88,7 @@ const Home = () => {
         const center = map.current.getCenter();
         const lng = center.lng;
         const lat = center.lat;
-        
+
         // Solo verificar sin devolver el mapa
         if (lng < PATIO_BONITO_BOUNDS.west || lng > PATIO_BONITO_BOUNDS.east ||
             lat < PATIO_BONITO_BOUNDS.south || lat > PATIO_BONITO_BOUNDS.north) {
@@ -85,33 +97,33 @@ const Home = () => {
       });
 
       // ✅ Agregar botón para volver a Patio Bonito
-      map.current.addControl(new maplibregl.NavigationControl({ 
-        showCompass: false 
+      map.current.addControl(new maplibregl.NavigationControl({
+        showCompass: false
       }), 'top-right');
 
       map.current.on('load', () => {
         console.log('✅ Mapa cargado');
         setMapLoaded(true);
-        
+
         // Marcador Patio Bonito
-        new maplibregl.Marker({ color: '#4A6CF7', scale: 1.5 })
+        new maplibregl.Marker({ color: MARKER_COLORS.home, scale: 1.5 })
           .setLngLat([PATIO_BONITO.lng, PATIO_BONITO.lat])
           .setPopup(new maplibregl.Popup().setHTML(`
             <div style="padding:8px;text-align:center;font-family:'Inter',sans-serif;">
               <strong style="font-size:14px;">📍 Patio Bonito</strong>
-              <br><span style="font-size:11px;color:#666;">Kennedy - Bogotá</span>
+              <br><span style="font-size:11px;opacity:0.7;">Kennedy - Bogotá</span>
             </div>
           `))
           .addTo(map.current);
 
         // Lugares importantes en Patio Bonito
         const places = [
-          { lng: -74.1490, lat: 4.6365, label: '🏥 Centro Salud', color: '#2196F3' },
-          { lng: -74.1460, lat: 4.6345, label: '🏫 Colegio', color: '#FFC107' },
-          { lng: -74.1470, lat: 4.6368, label: '🌳 Parque', color: '#4CAF50' },
-          { lng: -74.1485, lat: 4.6370, label: '🛒 Supermercado', color: '#9C27B0' },
-          { lng: -74.1455, lat: 4.6340, label: '🚧 Obras', color: '#F44336' },
-          { lng: -74.1495, lat: 4.6355, label: '🚌 TransMilenio', color: '#FF6F00' },
+          { lng: -74.1490, lat: 4.6365, label: '🏥 Centro Salud', color: MARKER_COLORS.health },
+          { lng: -74.1460, lat: 4.6345, label: '🏫 Colegio', color: MARKER_COLORS.school },
+          { lng: -74.1470, lat: 4.6368, label: '🌳 Parque', color: MARKER_COLORS.park },
+          { lng: -74.1485, lat: 4.6370, label: '🛒 Supermercado', color: MARKER_COLORS.market },
+          { lng: -74.1455, lat: 4.6340, label: '🚧 Obras', color: MARKER_COLORS.works },
+          { lng: -74.1495, lat: 4.6355, label: '🚌 TransMilenio', color: MARKER_COLORS.transit },
         ];
 
         places.forEach((place) => {
@@ -129,9 +141,8 @@ const Home = () => {
             width: 36px;
             height: 36px;
             border: none;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(10px);
-            color: white;
+            background: transparent;
+            color: #F5F3EE;
             font-size: 18px;
             cursor: pointer;
             border-radius: 8px;
@@ -143,7 +154,7 @@ const Home = () => {
             📍
           </button>
         `;
-        
+
         centerControl.querySelector('button').addEventListener('click', () => {
           map.current.flyTo({
             center: [PATIO_BONITO.lng, PATIO_BONITO.lat],
@@ -187,18 +198,12 @@ const Home = () => {
       <div style="
         width: 18px;
         height: 18px;
-        background: #4A6CF7;
-        border: 3px solid white;
+        background: ${MARKER_COLORS.you};
+        border: 3px solid #10151C;
         border-radius: 50%;
-        box-shadow: 0 0 30px rgba(74,108,247,0.6);
+        box-shadow: 0 0 30px rgba(76,140,255,0.6);
         animation: pulse-location 1.5s ease-in-out infinite;
       "></div>
-      <style>
-        @keyframes pulse-location {
-          0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(74,108,247,0.4); }
-          50% { transform: scale(1.2); box-shadow: 0 0 40px rgba(74,108,247,0.8); }
-        }
-      </style>
     `;
 
     const marker = new maplibregl.Marker({ element: el })
@@ -209,26 +214,33 @@ const Home = () => {
 
   }, [userLocation, mapLoaded]);
 
+  const handleReport = () => {
+    // TODO: conectar con el flujo real de creación de reportes (supabaseAPI.createReport)
+    console.log('📣 Abrir formulario de nuevo reporte');
+  };
+
   return (
     <div className="home-apple">
       <div ref={mapContainer} className="map-fullscreen" />
-      
-      {/* TopBar flotante estilo Apple */}
+
+      {/* TopBar flotante */}
       <div className="topbar-apple">
         <div className="topbar-left">
-          <span className="app-icon">📍</span>
+          <div className="app-icon-mark">
+            <ShieldCheck size={13} strokeWidth={2.4} />
+          </div>
           <span className="app-title">Safa<span>Way</span></span>
         </div>
         <div className="topbar-right">
-          <button className="icon-btn-glass">
-            <span>🔔</span>
+          <button className="icon-btn-glass" aria-label="Notificaciones">
+            <Bell />
             <span className="badge-glass">3</span>
           </button>
           <button className="avatar-glass">U</button>
         </div>
       </div>
 
-      {/* SearchBar estilo Apple */}
+      {/* SearchBar */}
       <div className="search-apple">
         <SearchBar placeholder="Buscar en Patio Bonito..." />
       </div>
@@ -238,7 +250,7 @@ const Home = () => {
         <SafetyScore score={78} trend="up" />
       </div>
 
-      {/* Controles del mapa - Cápsulas */}
+      {/* Controles del mapa - Segmentado */}
       <div className="controls-capsule">
         {['Normal', 'Seguridad', 'Reportes', 'Zonas'].map((label) => (
           <button
@@ -249,6 +261,13 @@ const Home = () => {
             {label}
           </button>
         ))}
+      </div>
+
+      {/* FAB de reportar */}
+      <div className="home-fab">
+        <button className="fab" onClick={handleReport} aria-label="Crear reporte">
+          <Plus size={24} color="white" strokeWidth={2.4} />
+        </button>
       </div>
 
       <BottomNav />
