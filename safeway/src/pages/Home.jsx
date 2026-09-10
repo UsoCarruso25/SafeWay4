@@ -1,181 +1,182 @@
 // src/pages/Home.jsx
 import React, { useState, useEffect, useRef } from 'react';
-import maplibregl from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
-import { Bell, Search as SearchIcon, ShieldCheck, Plus } from 'lucide-react';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import BottomNav from '../components/Layout/BottomNav';
-import SafetyScore from '../components/Common/SafetyScore';
 import SearchBar from '../components/Common/SearchBar';
-import './Home.css';
+import NearbyReports from '../components/Reports/NearbyReports';
+import CreateReport from '../components/Reports/CreateReport';
+import {
+  createAuthorityElement,
+  getAuthorityLabel,
+  getAuthorityColor,
+} from '../components/Map/AuthorityMarker';
+import { supabaseAPI } from '../api/supabaseAPI';
 
-// 📍 Patio Bonito - Kennedy (Área ampliada)
 const PATIO_BONITO = {
-  lng: -74.1475,
-  lat: 4.6357,
-  zoom: 16
+  lng: -74.1607,
+  lat: 4.6394,
+  zoom: 16.5,
+  pitch: 60,
+  bearing: -20,
 };
 
-// ✅ PERÍMETRO AMPLIADO de Patio Bonito
-const PATIO_BONITO_BOUNDS = {
-  north: 4.6500,  // Ampliado hacia el norte
-  south: 4.6200,  // Ampliado hacia el sur
-  east: -74.1350, // Ampliado hacia el este
-  west: -74.1600  // Ampliado hacia el oeste
-};
-
-// 🎨 Paleta de marcadores (misma que el resto de la app)
-const MARKER_COLORS = {
-  you: '#4C8CFF',
-  home: '#FF5D3A',
-  health: '#2BD9A6',
-  school: '#FFC857',
-  park: '#2BD9A6',
-  market: '#FFC857',
-  works: '#FF5D3A',
-  transit: '#4C8CFF',
-};
+const PATIO_BONITO_BOUNDS = [
+  [-74.1750, 4.6250],
+  [-74.1450, 4.6550],
+];
 
 const Home = () => {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const [mapLoaded, setMapLoaded] = useState(false);
-  const [activeView, setActiveView] = useState('normal');
   const [userLocation, setUserLocation] = useState(null);
+  const [reports, setReports] = useState([]);
+  const [authorities, setAuthorities] = useState([]);
+  const [safetyScore, setSafetyScore] = useState(95);
+  const [is3D, setIs3D] = useState(true);
+  const [locating, setLocating] = useState(false);
+  const [locationError, setLocationError] = useState(null);
+  const [showCreateReport, setShowCreateReport] = useState(false);
 
-  // Obtener ubicación en tiempo real
+  /* ============================================================
+     1. UBICACIÓN REAL
+  ============================================================ */
   useEffect(() => {
-    if ("geolocation" in navigator) {
-      const watchId = navigator.geolocation.watchPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserLocation({ lat: latitude, lng: longitude });
-          console.log('📍 Ubicación:', latitude, longitude);
-        },
-        (error) => {
-          console.warn('⚠️ Error ubicación:', error.message);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 5000,
-          maximumAge: 0
-        }
-      );
-
-      return () => navigator.geolocation.clearWatch(watchId);
+    if (!('geolocation' in navigator)) {
+      setLocationError('Geolocalización no soportada');
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserLocation({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          accuracy: pos.coords.accuracy,
+        });
+      },
+      (err) => {
+        const errors = { 1: 'Permiso denegado', 2: 'Posición no disponible', 3: 'Timeout' };
+        setLocationError(errors[err.code] || err.message);
+      },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+    );
+
+    const watchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        setUserLocation({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          accuracy: pos.coords.accuracy,
+        });
+      },
+      (err) => console.warn('📍 Watch error:', err.message),
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+
+    return () => navigator.geolocation.clearWatch(watchId);
   }, []);
 
-  // Inicializar mapa
+  /* ============================================================
+     2. CARGAR REPORTES
+  ============================================================ */
+  const loadReports = async () => {
+    try {
+      let data = null;
+      if (typeof supabaseAPI.getNearbyReports === 'function') {
+        try {
+          data = await supabaseAPI.getNearbyReports(PATIO_BONITO.lat, PATIO_BONITO.lng, 2);
+        } catch {
+          data = null;
+        }
+      }
+      if (!data) {
+        const { supabase } = await import('../api/supabaseClient');
+        const { data: directData } = await supabase
+          .from('reports')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(20);
+        data = directData || [];
+      }
+      const safe = data || [];
+      setReports(safe);
+      if (safe.length === 0) setSafetyScore(95);
+      else {
+        const avg = safe.reduce((s, r) => s + (r.severity || 3), 0) / safe.length;
+        setSafetyScore(Math.max(0, Math.round(100 - avg * 15)));
+      }
+    } catch {
+      setReports([]);
+      setSafetyScore(95);
+    }
+  };
+
+  useEffect(() => {
+    loadReports();
+  }, []);
+
+  /* ============================================================
+     3. CARGAR AUTORIDADES
+  ============================================================ */
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const data = await supabaseAPI.getNearbyAuthorities(
+          PATIO_BONITO.lat,
+          PATIO_BONITO.lng,
+          5
+        );
+        setAuthorities(data || []);
+      } catch (err) {
+        console.warn('Autoridades no disponibles:', err);
+        setAuthorities([]);
+      }
+    };
+    load();
+  }, []);
+
+  /* ============================================================
+     4. INICIALIZAR MAPA
+  ============================================================ */
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
+    mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
-    try {
-      console.log('🗺️ Inicializando mapa en Patio Bonito...');
-
-      map.current = new maplibregl.Map({
-        container: mapContainer.current,
-        style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
-        center: [PATIO_BONITO.lng, PATIO_BONITO.lat],
-        zoom: PATIO_BONITO.zoom,
-        attributionControl: false,
-        maxZoom: 19,
-        minZoom: 12,
-      });
-
-      // ✅ Agregar límites suaves (sin restricción fuerte)
-      // Solo mostrar un aviso en consola si se sale del área
-      map.current.on('moveend', () => {
-        const center = map.current.getCenter();
-        const lng = center.lng;
-        const lat = center.lat;
-
-        // Solo verificar sin devolver el mapa
-        if (lng < PATIO_BONITO_BOUNDS.west || lng > PATIO_BONITO_BOUNDS.east ||
-            lat < PATIO_BONITO_BOUNDS.south || lat > PATIO_BONITO_BOUNDS.north) {
-          console.log('📍 Explorando más allá de Patio Bonito');
-        }
-      });
-
-      // ✅ Agregar botón para volver a Patio Bonito
-      map.current.addControl(new maplibregl.NavigationControl({
-        showCompass: false
-      }), 'top-right');
-
-      map.current.on('load', () => {
-        console.log('✅ Mapa cargado');
-        setMapLoaded(true);
-
-        // Marcador Patio Bonito
-        new maplibregl.Marker({ color: MARKER_COLORS.home, scale: 1.5 })
-          .setLngLat([PATIO_BONITO.lng, PATIO_BONITO.lat])
-          .setPopup(new maplibregl.Popup().setHTML(`
-            <div style="padding:8px;text-align:center;font-family:'Inter',sans-serif;">
-              <strong style="font-size:14px;">📍 Patio Bonito</strong>
-              <br><span style="font-size:11px;opacity:0.7;">Kennedy - Bogotá</span>
-            </div>
-          `))
-          .addTo(map.current);
-
-        // Lugares importantes en Patio Bonito
-        const places = [
-          { lng: -74.1490, lat: 4.6365, label: '🏥 Centro Salud', color: MARKER_COLORS.health },
-          { lng: -74.1460, lat: 4.6345, label: '🏫 Colegio', color: MARKER_COLORS.school },
-          { lng: -74.1470, lat: 4.6368, label: '🌳 Parque', color: MARKER_COLORS.park },
-          { lng: -74.1485, lat: 4.6370, label: '🛒 Supermercado', color: MARKER_COLORS.market },
-          { lng: -74.1455, lat: 4.6340, label: '🚧 Obras', color: MARKER_COLORS.works },
-          { lng: -74.1495, lat: 4.6355, label: '🚌 TransMilenio', color: MARKER_COLORS.transit },
-        ];
-
-        places.forEach((place) => {
-          new maplibregl.Marker({ color: place.color, scale: 0.8 })
-            .setLngLat([place.lng, place.lat])
-            .setPopup(new maplibregl.Popup().setHTML(`<div style="padding:6px;font-family:'Inter',sans-serif;font-size:13px;">${place.label}</div>`))
-            .addTo(map.current);
-        });
-
-        // ✅ Agregar un botón de "Volver a Patio Bonito" en el mapa
-        const centerControl = document.createElement('div');
-        centerControl.className = 'maplibregl-ctrl maplibregl-ctrl-group';
-        centerControl.innerHTML = `
-          <button style="
-            width: 36px;
-            height: 36px;
-            border: none;
-            background: transparent;
-            color: #F5F3EE;
-            font-size: 18px;
-            cursor: pointer;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-          " title="Volver a Patio Bonito">
-            📍
-          </button>
-        `;
-
-        centerControl.querySelector('button').addEventListener('click', () => {
-          map.current.flyTo({
-            center: [PATIO_BONITO.lng, PATIO_BONITO.lat],
-            zoom: PATIO_BONITO.zoom,
-            duration: 1500,
-            easing: (t) => t * (2 - t) // Ease out quad
-          });
-        });
-
-        map.current.addControl(
-          {
-            onAdd: () => centerControl,
-            onRemove: () => {}
-          },
-          'top-right'
-        );
-      });
-
-    } catch (err) {
-      console.error('❌ Error mapa:', err);
+    if (!mapboxgl.accessToken) {
+      console.error('❌ Falta VITE_MAPBOX_ACCESS_TOKEN en .env');
+      return;
     }
+
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: 'mapbox://styles/mapbox/standard',
+      center: [PATIO_BONITO.lng, PATIO_BONITO.lat],
+      zoom: PATIO_BONITO.zoom,
+      pitch: PATIO_BONITO.pitch,
+      bearing: PATIO_BONITO.bearing,
+      minZoom: 15,
+      maxZoom: 20,
+      maxBounds: PATIO_BONITO_BOUNDS,
+      maxPitch: 80,
+      attributionControl: false,
+      dragRotate: true,
+      pitchWithRotate: true,
+      touchPitch: true,
+    });
+
+    map.current.on('load', () => {
+      setMapLoaded(true);
+      console.log('✅ Mapa cargado');
+    });
+
+    map.current.on('error', (e) => {
+      if (e.error?.message?.includes('401')) {
+        console.error('❌ Token de Mapbox inválido');
+      }
+      console.warn('Map error:', e.error?.message);
+    });
 
     return () => {
       if (map.current) {
@@ -185,90 +186,320 @@ const Home = () => {
     };
   }, []);
 
-  // Marcador de ubicación en tiempo real
+  /* ============================================================
+     5. MARCADOR DE USUARIO
+  ============================================================ */
   useEffect(() => {
     if (!map.current || !mapLoaded || !userLocation) return;
-
-    if (map.current._userMarker) {
-      map.current._userMarker.remove();
-    }
+    if (map.current._userMarker) map.current._userMarker.remove();
 
     const el = document.createElement('div');
-    el.innerHTML = `
-      <div style="
-        width: 18px;
-        height: 18px;
-        background: ${MARKER_COLORS.you};
-        border: 3px solid #10151C;
-        border-radius: 50%;
-        box-shadow: 0 0 30px rgba(76,140,255,0.6);
-        animation: pulse-location 1.5s ease-in-out infinite;
-      "></div>
-    `;
+    el.className = 'user-location-marker';
+    el.innerHTML = `<div class="user-location-dot"></div><div class="user-location-ring"></div>`;
 
-    const marker = new maplibregl.Marker({ element: el })
+    const marker = new mapboxgl.Marker({ element: el, anchor: 'center' })
       .setLngLat([userLocation.lng, userLocation.lat])
       .addTo(map.current);
 
     map.current._userMarker = marker;
 
+    if (!map.current._hasFlownToUser) {
+      map.current._hasFlownToUser = true;
+      map.current.flyTo({
+        center: [userLocation.lng, userLocation.lat],
+        zoom: 16.5,
+        pitch: 60,
+        bearing: -20,
+        duration: 1500,
+      });
+    }
   }, [userLocation, mapLoaded]);
 
-  const handleReport = () => {
-    // TODO: conectar con el flujo real de creación de reportes (supabaseAPI.createReport)
-    console.log('📣 Abrir formulario de nuevo reporte');
+  /* ============================================================
+     6. MARCADORES DE REPORTES
+  ============================================================ */
+  useEffect(() => {
+    if (!map.current || !mapLoaded || reports.length === 0) return;
+    if (map.current._reportMarkers) {
+      map.current._reportMarkers.forEach((m) => m.remove());
+    }
+
+    const markers = reports
+      .map((r) => {
+        if (!r.latitude || !r.longitude) return null;
+        const sev = r.severity || 3;
+        const color = sev >= 4 ? '#FF5D3A' : sev >= 3 ? '#FFC857' : '#5DC8B4';
+        return new mapboxgl.Marker({ color, scale: 0.9 })
+          .setLngLat([r.longitude, r.latitude])
+          .setPopup(
+            new mapboxgl.Popup({ offset: 20 }).setHTML(
+              `<div class="map-popup"><strong>${r.title || 'Reporte'}</strong><p>${r.description || ''}</p></div>`
+            )
+          )
+          .addTo(map.current);
+      })
+      .filter(Boolean);
+
+    map.current._reportMarkers = markers;
+  }, [reports, mapLoaded]);
+
+  /* ============================================================
+     7. MARCADORES DE AUTORIDADES
+  ============================================================ */
+  useEffect(() => {
+    if (!map.current || !mapLoaded || authorities.length === 0) return;
+    if (map.current._authorityMarkers) {
+      map.current._authorityMarkers.forEach((m) => m.remove());
+    }
+
+    const markers = authorities
+      .map((a) => {
+        if (!a.latitude || !a.longitude) return null;
+        const el = createAuthorityElement(a);
+        return new mapboxgl.Marker({ element: el, anchor: 'center' })
+          .setLngLat([a.longitude, a.latitude])
+          .setPopup(
+            new mapboxgl.Popup({ offset: 20 }).setHTML(`
+              <div class="map-popup">
+                <strong>${a.name}</strong>
+                <p style="color: ${getAuthorityColor(a.type)}; font-weight: 600; margin-bottom: 4px;">
+                  ${getAuthorityLabel(a.type)}
+                </p>
+                ${a.address ? `<p>📍 ${a.address}</p>` : ''}
+                ${a.phone ? `<p>📞 <a href="tel:${a.phone}">${a.phone}</a></p>` : ''}
+                ${a.is_24h ? '<p style="color: #4DD4C0;">🕒 Disponible 24/7</p>' : ''}
+              </div>
+            `)
+          )
+          .addTo(map.current);
+      })
+      .filter(Boolean);
+
+    map.current._authorityMarkers = markers;
+  }, [authorities, mapLoaded]);
+
+  /* ============================================================
+     8. HANDLERS
+  ============================================================ */
+  const handleZoomIn = () => map.current?.zoomIn({ duration: 300 });
+  const handleZoomOut = () => map.current?.zoomOut({ duration: 300 });
+
+  const handleRecenter = () => {
+    map.current?.flyTo({
+      center: [PATIO_BONITO.lng, PATIO_BONITO.lat],
+      zoom: PATIO_BONITO.zoom,
+      pitch: is3D ? 60 : 0,
+      bearing: is3D ? -20 : 0,
+      duration: 1200,
+    });
+  };
+
+  const handleLocateMe = () => {
+    if (!map.current) return;
+    setLocating(true);
+    setLocationError(null);
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setUserLocation({ lat: latitude, lng: longitude });
+        map.current.flyTo({
+          center: [longitude, latitude],
+          zoom: 16.5,
+          pitch: is3D ? 60 : 0,
+          duration: 1500,
+        });
+        setLocating(false);
+      },
+      (err) => {
+        const errors = { 1: 'Permiso denegado', 2: 'Posición no disponible', 3: 'Timeout' };
+        setLocationError(errors[err.code] || err.message);
+        setLocating(false);
+      },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+    );
+  };
+
+  const toggle3D = () => {
+    if (!map.current) return;
+    const newIs3D = !is3D;
+    setIs3D(newIs3D);
+    map.current.easeTo({
+      pitch: newIs3D ? 60 : 0,
+      bearing: newIs3D ? -20 : 0,
+      duration: 1000,
+    });
+  };
+
+  const getSafetyColor = (score) => {
+    if (score >= 70) return '#5DC8B4';
+    if (score >= 40) return '#FFC857';
+    return '#FF5D3A';
   };
 
   return (
     <div className="home-apple">
       <div ref={mapContainer} className="map-fullscreen" />
 
-      {/* TopBar flotante */}
-      <div className="topbar-apple">
-        <div className="topbar-left">
-          <div className="app-icon-mark">
-            <ShieldCheck size={13} strokeWidth={2.4} />
-          </div>
-          <span className="app-title">Safa<span>Way</span></span>
-        </div>
-        <div className="topbar-right">
-          <button className="icon-btn-glass" aria-label="Notificaciones">
-            <Bell />
-            <span className="badge-glass">3</span>
+      {/* ============ BARRA UNIFICADA: AVATAR + CAMPANA | SEARCH ============ */}
+      <div className="top-capsule">
+        {/* Sub-cápsula izquierda: avatar + campana */}
+        <div className="top-capsule-actions">
+          <button className="top-capsule-avatar" aria-label="Perfil">
+            U
           </button>
-          <button className="avatar-glass">U</button>
+          <button className="top-capsule-icon" aria-label="Notificaciones">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+            </svg>
+            {reports.length > 0 && (
+              <span className="top-capsule-badge">{reports.length}</span>
+            )}
+          </button>
+        </div>
+
+        {/* Sub-cápsula derecha: search */}
+        <div className="top-capsule-search">
+          <SearchBar
+            placeholder="Buscar en Patio Bonito..."
+            onSelectResult={(result) => {
+              if (result.latitude && result.longitude) {
+                map.current?.flyTo({
+                  center: [result.longitude, result.latitude],
+                  zoom: 17,
+                  duration: 1200,
+                });
+              }
+            }}
+          />
         </div>
       </div>
 
-      {/* SearchBar */}
-      <div className="search-apple">
-        <SearchBar placeholder="Buscar en Patio Bonito..." />
-      </div>
+      {/* ERROR UBICACIÓN */}
+      {locationError && (
+        <div className="location-error-toast">⚠️ {locationError}</div>
+      )}
 
-      {/* Safety Score - Cápsula flotante */}
-      <div className="safety-capsule">
-        <SafetyScore score={78} trend="up" />
-      </div>
-
-      {/* Controles del mapa - Segmentado */}
-      <div className="controls-capsule">
-        {['Normal', 'Seguridad', 'Reportes', 'Zonas'].map((label) => (
-          <button
-            key={label}
-            className={`capsule-btn ${activeView === label.toLowerCase() ? 'active' : ''}`}
-            onClick={() => setActiveView(label.toLowerCase())}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      {/* FAB de reportar */}
-      <div className="home-fab">
-        <button className="fab" onClick={handleReport} aria-label="Crear reporte">
-          <Plus size={24} color="white" strokeWidth={2.4} />
+      {/* CONTROLES VERTICALES */}
+      <div className="map-controls-stack">
+        <button
+          className={`map-ctrl-btn ${is3D ? 'active' : ''}`}
+          onClick={toggle3D}
+          aria-label={is3D ? 'Ver 2D' : 'Ver 3D'}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
+          </svg>
+        </button>
+        <div className="map-ctrl-divider" />
+        <button className="map-ctrl-btn" onClick={handleZoomIn} aria-label="Zoom in">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+        </button>
+        <button className="map-ctrl-btn" onClick={handleZoomOut} aria-label="Zoom out">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+        </button>
+        <div className="map-ctrl-divider" />
+        <button
+          className={`map-ctrl-btn locate-btn ${locating ? 'loading' : ''}`}
+          onClick={handleLocateMe}
+          aria-label="Mi ubicación"
+          disabled={locating}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+          </svg>
+        </button>
+        <div className="map-ctrl-divider" />
+        <button className="map-ctrl-btn recenter" onClick={handleRecenter} aria-label="Centrar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
         </button>
       </div>
+
+      {/* SAFETY SCORE */}
+      <button
+        className="safety-circle"
+        style={{ '--safety-color': getSafetyColor(safetyScore) }}
+        aria-label={`Safety score: ${safetyScore}%`}
+      >
+        <svg viewBox="0 0 44 44" className="safety-circle-svg">
+          <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="3" />
+          <circle
+            cx="22" cy="22" r="18"
+            fill="none"
+            stroke="var(--safety-color)"
+            strokeWidth="3"
+            strokeDasharray={2 * Math.PI * 18}
+            strokeDashoffset={2 * Math.PI * 18 * (1 - safetyScore / 100)}
+            strokeLinecap="round"
+            transform="rotate(-90 22 22)"
+          />
+        </svg>
+        <span className="safety-circle-value">{safetyScore}</span>
+      </button>
+
+      {/* BOTÓN REPORTAR (pill) */}
+      <button
+        className="report-pill"
+        onClick={() => setShowCreateReport(true)}
+        aria-label="Crear reporte"
+        title="Crear reporte"
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+          <line x1="12" y1="9" x2="12" y2="13" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+        <span>Reportar</span>
+      </button>
+
+      {/* FORMULARIO DE REPORTE */}
+      {showCreateReport && (
+        <CreateReport
+          userLocation={userLocation}
+          onSubmit={() => {
+            setShowCreateReport(false);
+            loadReports();
+          }}
+          onCancel={() => setShowCreateReport(false)}
+        />
+      )}
+
+      {/* REPORTES FLOTANTES */}
+      {reports.length > 0 && (
+        <div className="reports-floating">
+          <NearbyReports reports={reports} />
+        </div>
+      )}
 
       <BottomNav />
     </div>

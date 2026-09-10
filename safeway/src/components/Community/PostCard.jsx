@@ -1,32 +1,32 @@
 // src/components/Community/PostCard.jsx
 import React, { useState } from 'react';
-import { Heart, MessageCircle, Share2, Clock, MapPin } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Clock, MapPin, Bookmark, MoreHorizontal } from 'lucide-react';
 import { supabaseAPI } from '../../api/supabaseAPI';
 
 const PostCard = ({ post }) => {
   const [liked, setLiked] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likes_count || 0);
-  const [showComments, setShowComments] = useState(false);
 
   const handleLike = async () => {
     try {
       await supabaseAPI.likePost(post.id);
       setLiked(!liked);
-      setLikesCount(prev => liked ? prev - 1 : prev + 1);
+      setLikesCount((prev) => (liked ? prev - 1 : prev + 1));
     } catch (error) {
       console.error('Error dando like:', error);
     }
   };
 
-  const getCategoryStyle = (category) => {
-    const styles = {
-      event: { bg: 'var(--amber-tint)', text: 'var(--amber-dark)' },
-      alert: { bg: 'var(--coral-tint)', text: 'var(--coral-dark)' },
-      info: { bg: 'var(--teal-tint)', text: 'var(--teal-dark)' },
-      question: { bg: 'var(--amber-tint)', text: 'var(--amber-dark)' },
-      discussion: { bg: 'var(--teal-tint)', text: 'var(--teal-dark)' },
+  const getCategoryColor = (category) => {
+    const colors = {
+      event: '#5DC8B4',
+      alert: '#FF5D3A',
+      info: '#FFC857',
+      question: '#A78BFA',
+      discussion: '#60A5FA',
     };
-    return styles[category] || { bg: 'var(--line-light)', text: 'var(--text-secondary)' };
+    return colors[category] || '#8A96A3';
   };
 
   const getCategoryLabel = (category) => {
@@ -35,82 +35,99 @@ const PostCard = ({ post }) => {
       alert: 'Alerta',
       info: 'Info',
       question: 'Pregunta',
-      discussion: 'Discusión'
+      discussion: 'Discusión',
     };
     return labels[category] || category;
   };
 
-  const categoryStyle = getCategoryStyle(post.category);
+  const getCategoryEmoji = (category) => {
+    const emojis = {
+      event: '🎉',
+      alert: '🚨',
+      info: 'ℹ️',
+      question: '❓',
+      discussion: '💬',
+    };
+    return emojis[category] || '📌';
+  };
+
+  const color = getCategoryColor(post.category);
+  const username = post.profiles?.username || 'Usuario';
+  const initial = username.charAt(0).toUpperCase();
 
   return (
-    <div className="card" style={{ padding: '16px' }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-        <div style={{
-          width: '40px',
-          height: '40px',
-          borderRadius: '50%',
-          background: 'var(--ink)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'var(--amber)',
-          fontFamily: 'var(--font-display)',
-          fontWeight: '700',
-          flexShrink: 0
-        }}>
-          {post.profiles?.username?.charAt(0).toUpperCase() || 'U'}
+    <article className="post-card">
+      {/* HEADER */}
+      <header className="post-header">
+        <div
+          className="post-avatar"
+          style={{
+            background: `linear-gradient(135deg, ${color}, ${color}99)`,
+          }}
+        >
+          {initial}
         </div>
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-            <span style={{ fontWeight: '700', fontSize: '14px' }}>
-              {post.profiles?.username || 'Usuario'}
-            </span>
-            <span style={{ fontSize: '12px', color: 'var(--text-light)' }}>
-              <Clock size={12} style={{ marginRight: '4px', verticalAlign: '-2px' }} />
-              {new Date(post.created_at).toLocaleDateString('es-ES', {
-                day: 'numeric',
-                month: 'short',
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
-            </span>
-            <span className="chip" style={{ background: categoryStyle.bg, color: categoryStyle.text }}>
-              {getCategoryLabel(post.category)}
+        <div className="post-meta">
+          <div className="post-meta-top">
+            <span className="post-username">{username}</span>
+            <span
+              className="post-category"
+              style={{ background: `${color}22`, color }}
+            >
+              {getCategoryEmoji(post.category)} {getCategoryLabel(post.category)}
             </span>
           </div>
-
-          <h4 style={{ margin: '8px 0 4px 0', fontSize: '16px', fontFamily: 'var(--font-display)' }}>{post.title}</h4>
-          <p style={{ fontSize: '14px', color: 'var(--text-secondary)', margin: '4px 0 8px 0' }}>{post.content}</p>
-
-          {post.location_name && (
-            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '8px' }}>
-              <MapPin size={14} style={{ marginRight: '4px', verticalAlign: '-2px' }} />
-              {post.location_name}
-            </div>
-          )}
-
-          <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-            <button
-              onClick={handleLike}
-              className={`action-pill ${liked ? 'liked' : ''}`}
-            >
-              <Heart size={15} fill={liked ? 'var(--coral-dark)' : 'none'} />
-              <span>{likesCount}</span>
-            </button>
-            <button
-              onClick={() => setShowComments(!showComments)}
-              className="action-pill"
-            >
-              <MessageCircle size={15} />
-              <span>{post.comments?.[0]?.count || 0}</span>
-            </button>
-            <button className="action-pill">
-              <Share2 size={15} />
-            </button>
-          </div>
+          <span className="post-time">
+            <Clock size={11} />
+            {new Date(post.created_at).toLocaleDateString('es-ES', {
+              day: 'numeric',
+              month: 'short',
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+          </span>
         </div>
-      </div>
-    </div>
+        <button className="post-more" aria-label="Más opciones">
+          <MoreHorizontal size={18} />
+        </button>
+      </header>
+
+      {/* BODY */}
+      <h4 className="post-title">{post.title}</h4>
+      <p className="post-content">{post.content}</p>
+
+      {post.location_name && (
+        <div className="post-location">
+          <MapPin size={13} />
+          {post.location_name}
+        </div>
+      )}
+
+      {/* ACTIONS */}
+      <footer className="post-actions">
+        <button
+          onClick={handleLike}
+          className={`post-action ${liked ? 'liked' : ''}`}
+        >
+          <Heart size={17} fill={liked ? '#FF5D3A' : 'none'} />
+          <span>{likesCount}</span>
+        </button>
+        <button className="post-action">
+          <MessageCircle size={17} />
+          <span>{post.comments?.[0]?.count || 0}</span>
+        </button>
+        <button className="post-action">
+          <Share2 size={17} />
+        </button>
+        <button
+          className={`post-action post-save ${saved ? 'saved' : ''}`}
+          onClick={() => setSaved(!saved)}
+          aria-label="Guardar"
+        >
+          <Bookmark size={17} fill={saved ? '#FFC857' : 'none'} />
+        </button>
+      </footer>
+    </article>
   );
 };
 

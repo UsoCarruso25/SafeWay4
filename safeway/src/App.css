@@ -1,249 +1,94 @@
 /* src/App.css */
-/* Estilos específicos del componente App (layout raíz) */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  background: #06080B;
+  overflow-x: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(93, 200, 180, 0.1), transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(255, 93, 58, 0.06), transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
 
 /* =====================================================
-   APP WRAPPER
+   APP - Formato 20:9 (como un teléfono moderno)
 ===================================================== */
 
 .app {
   position: relative;
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
+  background: #0E1116;
   display: flex;
   flex-direction: column;
-  background: var(--paper, #F7F5F1);
-  overflow-x: hidden;
+  overflow: hidden;
+  isolation: isolate;
 }
 
-/* =====================================================
-   LAYOUT PRINCIPAL
-===================================================== */
+/* Desktop: formato 20:9 (ej. 450×1000px) */
+@media (min-width: 640px) {
+  .app {
+    width: min(450px, 42vh);
+    height: 100vh;
+    max-height: 100vh;
+    aspect-ratio: 9 / 20;
+    border-radius: 0;
+  }
+}
+
+/* Pantallas muy altas: mantener 9:20 y centrar */
+@media (min-width: 640px) and (min-aspect-ratio: 10/9) {
+  .app {
+    height: min(95vh, 1000px);
+    width: auto;
+    aspect-ratio: 9 / 20;
+    border-radius: 24px;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.05),
+      0 30px 80px rgba(0, 0, 0, 0.6);
+    margin: auto;
+  }
+}
 
 .app-main {
   flex: 1;
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding-bottom: 90px; /* espacio para el dock inferior */
-}
-
-/* Si la app es fullscreen (mapa), no añadir padding */
-.app--fullscreen .app-main {
-  padding-bottom: 0;
-  height: 100vh;
   overflow: hidden;
+  position: relative;
 }
 
 /* =====================================================
-   CONTENEDOR CENTRADO (para páginas internas)
-===================================================== */
-
-.app-container {
-  width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-/* =====================================================
-   HEADER DE APP (para páginas internas)
-===================================================== */
-
-.app-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 16px;
-  background: rgba(247, 245, 241, 0.92);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid var(--line-light, #EAE6DC);
-}
-
-.app-header h1 {
-  font-family: var(--font-display, 'Space Grotesk', sans-serif);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-primary, #20241F);
-  letter-spacing: -0.3px;
-  margin: 0;
-}
-
-.app-header-back {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--surface, #FFFFFF);
-  border: 1px solid var(--line-light, #EAE6DC);
-  color: var(--text-primary, #20241F);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.app-header-back:hover {
-  background: var(--paper, #F7F5F1);
-  transform: scale(1.05);
-}
-
-.app-header-back:active {
-  transform: scale(0.95);
-}
-
-.app-header-back svg {
-  width: 18px;
-  height: 18px;
-}
-
-/* =====================================================
-   SECCIONES DE APP
-===================================================== */
-
-.app-section {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.app-section-title {
-  font-family: var(--font-display, 'Space Grotesk', sans-serif);
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text-primary, #20241F);
-  margin: 0 0 4px 0;
-  letter-spacing: -0.2px;
-}
-
-.app-section-subtitle {
-  font-size: 12.5px;
-  color: var(--text-secondary, #6B6459);
-  margin: 0 0 8px 0;
-}
-
-/* =====================================================
-   TRANSICIONES DE PÁGINA
-===================================================== */
-
-.app-page {
-  animation: appFadeIn 0.35s ease forwards;
-}
-
-@keyframes appFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* =====================================================
-   OVERLAY / MODAL (por si lo necesitas)
-===================================================== */
-
-.app-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 2000;
-  background: rgba(16, 21, 28, 0.6);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  animation: appFadeIn 0.25s ease forwards;
-}
-
-.app-modal {
-  width: 100%;
-  max-width: 420px;
-  background: var(--surface, #FFFFFF);
-  border-radius: 24px;
-  padding: 24px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  animation: appModalIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-@keyframes appModalIn {
-  from {
-    opacity: 0;
-    transform: scale(0.94) translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-/* =====================================================
-   UTILIDADES
-===================================================== */
-
-.app-flex {
-  display: flex;
-  align-items: center;
-}
-
-.app-flex-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.app-flex-column {
-  display: flex;
-  flex-direction: column;
-}
-
-.app-gap-sm { gap: 8px; }
-.app-gap-md { gap: 14px; }
-.app-gap-lg { gap: 20px; }
-
-.app-text-center { text-align: center; }
-.app-text-muted  { color: var(--text-secondary, #6B6459); }
-
-/* =====================================================
-   RESPONSIVE
-===================================================== */
-
-@media (min-width: 769px) {
-  .app-container {
-    max-width: 480px;
-  }
-}
-
-@media (max-width: 480px) {
-  .app-container {
-    padding: 12px;
-    gap: 12px;
-  }
-
-  .app-header {
-    padding: 12px;
-  }
-
-  .app-header h1 {
-    font-size: 18px;
-  }
-
-  .app-modal {
-    padding: 20px;
-    border-radius: 20px;
-  }
-  /* =====================================================
-   LOADING SPINNER
+   LOADING
 ===================================================== */
 
 .app-loading {
@@ -251,33 +96,63 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 18px;
+  gap: 20px;
   min-height: 100vh;
-  background: var(--ink, #10151C);
-  color: var(--text-on-dark, #F5F3EE);
+  background: #0E1116;
+  color: #F5F3EE;
 }
 
 .app-loading-spinner {
-  width: 44px;
-  height: 44px;
-  border: 3px solid rgba(255, 255, 255, 0.08);
-  border-top-color: var(--coral, #FF5D3A);
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: #5DC8B4;
+  border-right-color: #FFC857;
+  border-bottom-color: #FF5D3A;
   animation: appSpin 0.9s linear infinite;
 }
 
-@keyframes appSpin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+@keyframes appSpin { to { transform: rotate(360deg); } }
 
 .app-loading-text {
-  font-family: var(--font-display, 'Space Grotesk', sans-serif);
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0.3px;
-  color: var(--text-on-dark-muted, #9AA6B4);
-  margin: 0;
+  letter-spacing: 0.5px;
+  color: #9AA6B4;
 }
+
+/* =====================================================
+   ANIMACIONES GLOBALES
+===================================================== */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 0.85; }
+}
+
+.fade-in { animation: fadeIn 0.4s ease forwards; }
+.slide-up { animation: slideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.slide-down { animation: slideDown 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.scale-in { animation: scaleIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards; }

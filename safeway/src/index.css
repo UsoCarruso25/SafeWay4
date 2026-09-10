@@ -1,11 +1,5 @@
 /* src/index.css */
-/* Punto de entrada de estilos globales - Vite + React */
-
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
-
-/* =====================================================
-   RESET GLOBAL
-===================================================== */
 
 *,
 *::before,
@@ -27,70 +21,30 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 16px;
   line-height: 1.5;
-  letter-spacing: 0.1px;
   color: #20241F;
   background: #F7F5F1;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
-
-/* =====================================================
-   ROOT CONTAINER
-===================================================== */
 
 #root {
   width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  isolation: isolate;
 }
-
-/* =====================================================
-   TIPOGRAFÍA BASE
-===================================================== */
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Space Grotesk', 'Inter', sans-serif;
   font-weight: 700;
-  color: #20241F;
   line-height: 1.15;
-  letter-spacing: -0.5px;
-  margin: 0;
+  letter-spacing: -0.4px;
+  color: #20241F;
 }
 
-h1 {
-  font-size: 32px;
-  letter-spacing: -1px;
-}
-
-h2 {
-  font-size: 24px;
-  letter-spacing: -0.5px;
-}
-
-h3 {
-  font-size: 20px;
-  letter-spacing: -0.3px;
-}
-
-h4 {
-  font-size: 17px;
-}
-
-p {
-  margin: 0;
-  line-height: 1.6;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
+a { color: inherit; text-decoration: none; }
 
 button {
   font-family: inherit;
@@ -100,67 +54,8 @@ button {
   color: inherit;
 }
 
-input,
-textarea,
-select {
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
-}
-
-img,
-svg,
-video {
-  display: block;
-  max-width: 100%;
-}
-
-/* =====================================================
-   UTILIDADES
-===================================================== */
-
-code,
-pre {
-  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-  font-size: 0.875em;
-}
-
-::selection {
-  background: #FFC857;
-  color: #10151C;
-}
-
-/* =====================================================
-   SCROLLBAR
-===================================================== */
-
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #C9C4B8;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #9A9284;
-}
-
-/* Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #C9C4B8 transparent;
-}
-
-/* =====================================================
-   ACCESIBILIDAD
-===================================================== */
+input, textarea, select { font-family: inherit; font-size: inherit; color: inherit; }
+img, svg, video { display: block; max-width: 100%; }
 
 :focus-visible {
   outline: 2px solid #FF5D3A;
@@ -168,43 +63,16 @@ pre {
   border-radius: 6px;
 }
 
-button:focus-visible,
-a:focus-visible {
-  outline: 2px solid #FF5D3A;
-  outline-offset: 2px;
-}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #C9C4B8; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #9A9284; }
 
-/* =====================================================
-   RESPONSIVE BASE
-===================================================== */
-
-@media (max-width: 1024px) {
-  body {
-    font-size: 15px;
-  }
-}
-
-@media (max-width: 480px) {
-  body {
-    font-size: 14px;
-  }
-
-  h1 { font-size: 26px; }
-  h2 { font-size: 20px; }
-  h3 { font-size: 18px; }
-}
-
-/* =====================================================
-   REDUCED MOTION
-===================================================== */
+::selection { background: #FFC857; color: #10151C; }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }

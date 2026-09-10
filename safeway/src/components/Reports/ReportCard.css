@@ -1,0 +1,87 @@
+.report-card {
+  background: #FFFFFF;
+  border: 1px solid #EAE6DC;
+  border-radius: 20px;
+  padding: 16px 18px;
+  box-shadow: 0 2px 12px rgba(16, 21, 28, 0.06);
+  transition: all 0.25s;
+}
+.report-card:hover {
+  box-shadow: 0 6px 20px rgba(16, 21, 28, 0.1);
+  transform: translateY(-2px);
+}
+
+.report-main {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.report-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.report-body { flex: 1; min-width: 0; }
+
+.report-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.report-title {
+  margin: 0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #20241F;
+  letter-spacing: -0.2px;
+}
+
+.report-severity {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.report-desc {
+  font-size: 13px;
+  color: #6B6459;
+  margin: 4px 0 6px;
+  line-height: 1.5;
+}
+
+.report-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 11.5px;
+  color: #9A9284;
+  flex-wrap: wrap;
+}
+.report-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.report-votes {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #F5F3EE;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.report-vote {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.report-vote.up { color: #2BD9A6; }
+.report-vote.down { color: #FF5D3A; }

@@ -4,6 +4,7 @@ import { User, Bell, Shield, LogOut, ChevronRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import BottomNav from '../components/Layout/BottomNav';
 import TopBar from '../components/Layout/TopBar';
+import './Pages.css';
 
 const Settings = () => {
   const { signOut, user } = useAuth();
@@ -36,93 +37,37 @@ const Settings = () => {
   ];
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'var(--background)',
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
+    <div className="page-container">
       <TopBar />
 
-      <div style={{
-        flex: 1,
-        padding: '20px 16px 110px 16px',
-        overflowY: 'auto'
-      }}>
-        <h2 style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: '20px',
-          fontWeight: '700',
-          marginBottom: '20px',
-          color: 'var(--text-primary)'
-        }}>
-          Ajustes
-        </h2>
+      <main className="page-content">
+        <h1 className="page-title">⚙️ Ajustes</h1>
 
         {settingsSections.map((section, index) => (
-          <div key={index} style={{ marginBottom: '20px' }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              marginBottom: '8px'
-            }}>
-              <section.icon size={18} color="var(--coral)" />
-              <h3 style={{
-                margin: 0,
-                fontSize: '14px',
-                fontWeight: '700',
-                color: 'var(--text-primary)'
-              }}>
-                {section.title}
-              </h3>
+          <section key={index} className="settings-section">
+            <div className="settings-section-header">
+              <section.icon size={18} />
+              <h3>{section.title}</h3>
             </div>
-
-            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-              {section.items.map((item, itemIndex) => (
-                <div
-                  key={itemIndex}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '14px 16px',
-                    borderBottom: itemIndex < section.items.length - 1 ? '1px solid var(--line-light)' : 'none',
-                    cursor: 'pointer',
-                  }}
-                >
+            <div className="settings-list">
+              {section.items.map((item, i) => (
+                <div key={i} className="settings-item">
                   <div>
-                    <div style={{
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      color: 'var(--text-primary)'
-                    }}>
-                      {item.label}
-                    </div>
-                    <div style={{
-                      fontSize: '12px',
-                      color: 'var(--text-secondary)',
-                      marginTop: '2px'
-                    }}>
-                      {item.description}
-                    </div>
+                    <div className="settings-item-label">{item.label}</div>
+                    <div className="settings-item-desc">{item.description}</div>
                   </div>
-                  <ChevronRight size={18} color="var(--text-light)" />
+                  <ChevronRight size={18} />
                 </div>
               ))}
             </div>
-          </div>
+          </section>
         ))}
 
-        <button
-          onClick={signOut}
-          className="btn btn-cta"
-          style={{ width: '100%', padding: '14px', fontSize: '15px', marginTop: '8px' }}
-        >
-          <LogOut size={19} />
-          Cerrar sesión
+        <button onClick={signOut} className="btn btn-danger btn-logout">
+          <LogOut size={20} />
+          Cerrar Sesión
         </button>
-      </div>
+      </main>
 
       <BottomNav />
     </div>

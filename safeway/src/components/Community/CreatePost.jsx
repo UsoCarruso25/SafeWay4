@@ -1,7 +1,15 @@
 // src/components/Community/CreatePost.jsx
 import React, { useState } from 'react';
-import { X, MapPin, Image } from 'lucide-react';
+import { X, MapPin, Send, Image as ImageIcon, Tag } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+
+const CATEGORIES = [
+  { id: 'info', label: 'Información', icon: 'ℹ️' },
+  { id: 'event', label: 'Evento', icon: '🎉' },
+  { id: 'alert', label: 'Alerta', icon: '🚨' },
+  { id: 'question', label: 'Pregunta', icon: '❓' },
+  { id: 'discussion', label: 'Discusión', icon: '💬' },
+];
 
 const CreatePost = ({ onSubmit, onCancel }) => {
   const { user } = useAuth();
@@ -13,7 +21,6 @@ const CreatePost = ({ onSubmit, onCancel }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!title.trim() || !content.trim()) return;
-
     onSubmit({
       userId: user.id,
       title: title.trim(),
@@ -21,109 +28,84 @@ const CreatePost = ({ onSubmit, onCancel }) => {
       category,
       locationName: location.trim() || null,
       latitude: null,
-      longitude: null
+      longitude: null,
     });
   };
 
   return (
-    <div className="card" style={{ padding: '16px', marginBottom: '16px', background: 'var(--paper)' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-        <h4 style={{ margin: 0, fontFamily: 'var(--font-display)' }}>Nueva publicación</h4>
-        <button onClick={onCancel} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-          <X size={20} />
+    <div className="create-post">
+      <header className="create-post-header">
+        <div>
+          <h4>Nueva publicación</h4>
+          <p className="create-post-sub">Comparte con la comunidad</p>
+        </div>
+        <button onClick={onCancel} className="create-post-close" aria-label="Cerrar">
+          <X size={18} />
         </button>
-      </div>
+      </header>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <form onSubmit={handleSubmit} className="create-post-form">
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Título de la publicación"
-          style={{
-            padding: '10px 14px',
-            border: '1px solid var(--line-light)',
-            borderRadius: 'var(--radius-sm)',
-            fontSize: '14px',
-            outline: 'none',
-            background: 'var(--paper-2)'
-          }}
           required
+          maxLength={80}
         />
 
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="¿Qué quieres compartir?"
+          placeholder="¿Qué quieres compartir con la comunidad?"
           rows="3"
-          style={{
-            padding: '10px 14px',
-            border: '1px solid var(--line-light)',
-            borderRadius: 'var(--radius-sm)',
-            fontSize: '14px',
-            outline: 'none',
-            fontFamily: 'inherit',
-            resize: 'vertical',
-            background: 'var(--paper-2)'
-          }}
           required
+          maxLength={500}
         />
 
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            style={{
-              padding: '8px 12px',
-              border: '1px solid var(--line-light)',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: '13px',
-              outline: 'none',
-              background: 'var(--paper-2)',
-              flex: 1
-            }}
-          >
-            <option value="info">Información</option>
-            <option value="event">Evento</option>
-            <option value="alert">Alerta</option>
-            <option value="question">Pregunta</option>
-            <option value="discussion">Discusión</option>
-          </select>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 2, background: 'var(--paper-2)', padding: '4px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--line-light)' }}>
-            <MapPin size={16} color="var(--text-light)" />
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="Ubicación (opcional)"
-              style={{
-                border: 'none',
-                outline: 'none',
-                fontSize: '13px',
-                padding: '6px 0',
-                width: '100%',
-                background: 'transparent'
-              }}
-            />
+        {/* Categorías como chips */}
+        <div className="create-post-categories">
+          <span className="create-post-cat-label">
+            <Tag size={12} /> Categoría
+          </span>
+          <div className="create-post-chips">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                className={`create-post-chip ${
+                  category === cat.id ? 'active' : ''
+                }`}
+                onClick={() => setCategory(cat.id)}
+              >
+                <span>{cat.icon}</span>
+                {cat.label}
+              </button>
+            ))}
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '4px' }}>
+        {/* Ubicación */}
+        <div className="create-post-location">
+          <MapPin size={15} />
+          <input
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="Ubicación (opcional)"
+          />
+        </div>
+
+        <div className="create-post-actions">
           <button
             type="button"
             onClick={onCancel}
-            className="btn btn-secondary"
-            style={{ padding: '8px 20px', fontSize: '13px' }}
+            className="btn btn-secondary btn-sm"
           >
             Cancelar
           </button>
-          <button
-            type="submit"
-            className="btn btn-cta"
-            style={{ padding: '8px 20px', fontSize: '13px' }}
-          >
-            Publicar
+          <button type="submit" className="btn btn-cta btn-sm">
+            <Send size={14} /> Publicar
           </button>
         </div>
       </form>

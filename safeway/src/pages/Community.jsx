@@ -1,88 +1,170 @@
-
 // src/pages/Community.jsx
-import React, { useState } from 'react';
-import { Plus } from 'lucide-react';
-import CommunityFeed from '../components/Community/CommunityFeed';
+import React, { useState, useEffect } from 'react';
+import { Search, Plus, Filter } from 'lucide-react';
 import TopBar from '../components/Layout/TopBar';
 import BottomNav from '../components/Layout/BottomNav';
+import CreatePost from '../components/Community/CreatePost';
+import PostCard from '../components/Community/PostCard';
 import { useAuth } from '../context/AuthContext';
+import { supabaseAPI } from '../api/supabaseAPI';
 
-// TODO: reemplazar por los grupos reales del usuario (uno por localidad/barrio)
-const GROUPS = ['Patio Bonito', 'Corabastos', 'Timiza'];
+const FILTERS = [
+  { id: 'all', label: 'Todo', icon: '✨' },
+  { id: 'alert', label: 'Alertas', icon: '🚨' },
+  { id: 'event', label: 'Eventos', icon: '🎉' },
+  { id: 'info', label: 'Info', icon: 'ℹ️' },
+  { id: 'question', label: 'Preguntas', icon: '❓' },
+];
 
 const Community = () => {
   const { user } = useAuth();
-  const [activeGroup, setActiveGroup] = useState(GROUPS[0]);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showCreate, setShowCreate] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    loadPosts();
+  }, []);
+
+  const loadPosts = async () => {
+    try {
+      setLoading(true);
+      const data = await supabaseAPI.getCommunityPosts();
+      setPosts(data || []);
+    } catch (error) {
+      console.error('Error cargando posts:', error);
+      setPosts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreatePost = async (postData) => {
+    try {
+      await supabaseAPI.createCommunityPost(postData);
+      setShowCreate(false);
+      loadPosts();
+    } catch (error) {
+      console.error('Error creando post:', error);
+    }
+  };
+
+  const filteredPosts = posts.filter((post) => {
+    const matchesFilter =
+      activeFilter === 'all' || post.category === activeFilter;
+    const matchesSearch =
+      !searchQuery ||
+      post.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.content?.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'var(--background)',
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
+    <div className="page-container">
       <TopBar />
 
-      {/* Encabezado de la página + grupos por barrio */}
-      <div style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 10,
-        background: 'var(--background)',
-        padding: '18px 16px 10px 16px',
-      }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: '12px'
-        }}>
-          <div>
-            <h2 style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: '19px',
-              fontWeight: '700',
-              margin: 0,
-              color: 'var(--text-primary)'
-            }}>
-              Comunidad
-            </h2>
-            <p style={{
-              fontSize: '12px',
-              color: 'var(--text-secondary)',
-              margin: '2px 0 0 0'
-            }}>
-              {user?.email || 'Usuario'}
-            </p>
-          </div>
-          <button className="btn btn-cta" style={{ padding: '9px 16px', fontSize: 12 }}>
-            <Plus size={14} strokeWidth={2.6} />
-            Publicar
-          </button>
-        </div>
-
-        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: 2 }}>
-          {GROUPS.map((group) => (
+      <main className="page-content">
+        {/* HERO */}
+        <header className="community-hero">
+          <div className="community-hero-row">
+            <div>
+              <h1 className="page-title">Comunidad</h1>
+              <p className="page-subtitle">
+                {user?.email || 'Usuario'} · {posts.length} publicaciones
+              </p>
+            </div>
             <button
-              key={group}
-              onClick={() => setActiveGroup(group)}
-              className={`chip chip-outline${group === activeGroup ? ' active' : ''}`}
-              style={{ flexShrink: 0, border: 'none', cursor: 'pointer' }}
+              className="community-new-btn"
+              onClick={() => setShowCreate(true)}
+              aria-label="Nueva publicación"
             >
-              {group}
+              <Plus size={20} />
             </button>
-          ))}
-        </div>
-      </div>
+          </div>
 
-      {/* Contenido scrolleable */}
-      <div style={{
-        flex: 1,
-        padding: '4px 16px 110px 16px',
-        overflowY: 'auto'
-      }}>
-        <CommunityFeed />
-      </div>
+          {/* SEARCH */}
+          <div className="community-search">
+            <Search size={16} />
+            <input
+              type="text"
+              placeholder="Buscar publicaciones..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          {/* FILTROS */}
+          <div className="community-filters">
+            {FILTERS.map((filter) => (
+              <button
+                key={filter.id}
+                className={`community-filter ${
+                  activeFilter === filter.id ? 'active' : ''
+                }`}
+                onClick={() => setActiveFilter(filter.id)}
+              >
+                <span>{filter.icon}</span>
+                <span>{filter.label}</span>
+              </button>
+            ))}
+          </div>
+        </header>
+
+        {/* CREATE POST */}
+        {showCreate && (
+          <CreatePost
+            onSubmit={handleCreatePost}
+            onCancel={() => setShowCreate(false)}
+          />
+        )}
+
+        {/* FEED */}
+        {loading ? (
+          <div className="community-loading">
+            <div className="spinner" style={{
+              width: 32,
+              height: 32,
+              borderTopColor: '#5DC8B4',
+              borderRightColor: '#FFC857',
+              borderBottomColor: '#FF5D3A',
+            }} />
+            <p>Cargando publicaciones...</p>
+          </div>
+        ) : filteredPosts.length === 0 ? (
+          <div className="feed-empty">
+            <div className="feed-empty-icon">
+              {searchQuery || activeFilter !== 'all' ? '🔍' : '📝'}
+            </div>
+            <p className="feed-empty-title">
+              {searchQuery || activeFilter !== 'all'
+                ? 'Sin resultados'
+                : 'No hay publicaciones aún'}
+            </p>
+            <p className="feed-empty-sub">
+              {searchQuery || activeFilter !== 'all'
+                ? 'Prueba con otro filtro o búsqueda'
+                : '¡Sé el primero en compartir algo!'}
+            </p>
+            {!searchQuery && activeFilter === 'all' && (
+              <button
+                className="btn btn-cta btn-sm"
+                onClick={() => setShowCreate(true)}
+                style={{ marginTop: 14 }}
+              >
+                <Plus size={16} /> Crear publicación
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="feed-list">
+            {filteredPosts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
+        )}
+      </main>
 
       <BottomNav />
     </div>
