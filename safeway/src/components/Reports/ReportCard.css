@@ -1,87 +1,169 @@
+/* src/components/Reports/ReportCard.css */
+
 .report-card {
-  background: #FFFFFF;
-  border: 1px solid #EAE6DC;
+  background: var(--card-bg, #161B26);
+  border: 1px solid var(--card-border, rgba(255, 255, 255, 0.05));
   border-radius: 20px;
-  padding: 16px 18px;
-  box-shadow: 0 2px 12px rgba(16, 21, 28, 0.06);
-  transition: all 0.25s;
-}
-.report-card:hover {
-  box-shadow: 0 6px 20px rgba(16, 21, 28, 0.1);
-  transform: translateY(-2px);
+  padding: 14px 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition:
+    border-color 0.3s var(--ease-standard, cubic-bezier(0.32, 0.72, 0, 1)),
+    transform 0.4s var(--ease-out-quint, cubic-bezier(0.22, 1, 0.36, 1)),
+    box-shadow 0.4s var(--ease-out-quint, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
+.report-card:hover {
+  border-color: var(--card-border-strong, rgba(255, 255, 255, 0.09));
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+}
+
+/* ---- Fila principal: icono + contenido ---- */
 .report-main {
   display: flex;
   gap: 12px;
   align-items: flex-start;
 }
 
+/* Icono dentro de contenedor cuadrado con tinte dinámico de severidad */
 .report-icon {
-  font-size: 22px;
-  flex-shrink: 0;
-}
-
-.report-body { flex: 1; min-width: 0; }
-
-.report-header {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 4px;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: transform 0.35s var(--ease-out-quint, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.report-card:hover .report-icon {
+  transform: scale(1.05);
+}
+.report-icon-emoji {
+  font-size: 18px;
+  line-height: 1;
 }
 
+.report-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ---- Título ---- */
 .report-title {
   margin: 0;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 700;
-  color: #20241F;
-  letter-spacing: -0.2px;
+  color: #FFFFFF;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
 }
 
-.report-severity {
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-size: 10.5px;
-  font-weight: 700;
-}
-
+/* ---- Descripción ---- */
 .report-desc {
-  font-size: 13px;
-  color: #6B6459;
-  margin: 4px 0 6px;
+  font-size: 12.5px;
+  color: var(--text-on-dark-soft, rgba(148, 163, 184, 0.72));
+  margin: 3px 0 0;
   line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.report-meta {
+/* ---- Footer: meta a la izquierda, votos a la derecha ---- */
+.report-footer {
   display: flex;
-  gap: 12px;
-  font-size: 11.5px;
-  color: #9A9284;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
   flex-wrap: wrap;
 }
-.report-meta span {
+
+/* ---- Meta line ---- */
+.report-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--text-on-dark-muted, #94A3B8);
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.report-meta-item {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  color: var(--text-on-dark-muted, #94A3B8);
 }
 
-.report-votes {
-  display: flex;
-  gap: 12px;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid #F5F3EE;
-  font-size: 13px;
+/* ---- Cápsula de severidad — ahora en la fila de meta ---- */
+.report-severity {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
   font-weight: 600;
+  letter-spacing: 0.005em;
+  /* Sin fondo ni padding grande — solo texto + dot */
+}
+
+.report-severity-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px currentColor;
+  /* Glow sutil del propio color de severidad */
+}
+
+/* ---- Votos como pills minimalistas ---- */
+.report-votes {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
 .report-vote {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
+  padding: 4px 8px;
+  border-radius: 100px;
+  font-size: 11.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition:
+    background 0.2s var(--ease-standard, cubic-bezier(0.32, 0.72, 0, 1)),
+    border-color 0.2s var(--ease-standard, cubic-bezier(0.32, 0.72, 0, 1)),
+    transform 0.25s var(--ease-out-quint, cubic-bezier(0.22, 1, 0.36, 1));
 }
-.report-vote.up { color: #2BD9A6; }
-.report-vote.down { color: #FF5D3A; }
+
+.report-vote:active { transform: scale(0.94); }
+
+.report-vote.up {
+  color: #00F5D4;
+}
+.report-vote.up:hover {
+  background: rgba(0, 245, 212, 0.1);
+  border-color: rgba(0, 245, 212, 0.25);
+}
+
+.report-vote.down {
+  color: #FF5C7C;
+}
+.report-vote.down:hover {
+  background: rgba(255, 92, 124, 0.1);
+  border-color: rgba(255, 92, 124, 0.25);
+}
